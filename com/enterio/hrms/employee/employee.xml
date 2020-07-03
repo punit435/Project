@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="e1" namespace="/Employee" extends="common">
+		<action name="Employees" method="employeeList" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<result name="success">/hrms/employeeList.jsp</result>
+		</action>
+		<action name="Details/*" method="employeeDetails" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<param name="employeeUUID">{1}</param>
+			<result name="success">/hrms/employeeDetails.jsp</result>
+		</action>
+		<action name="Add" method="addEmployee" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<result name="success">/hrms/employeeAddEdit.jsp</result>
+		</action>
+		 <action name="Edit/*" method="editEmployee" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<param name="employeeUUID">{1}</param>
+			<result name="success">/hrms/employeeAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveEmployee" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*" method="deleteEmployee" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<param name="employeeUUID">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+	<package name="e2" namespace="/Employee/Address" extends="common">
+		<action name="Update/*" method="updateAddress" class="com.enterio.hrms.employee.web.AddressAction">
+			<param name="employeeUUID">{1}</param>
+			<result name="success">/hrms/employeeAddressAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveAdddress" class="com.enterio.hrms.employee.web.AddressAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+	<package name="e3" namespace="/Employee/BankAccount" extends="common">
+		<action name="Update/*" method="updateBankAccount" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<param name="employeeUUID">{1}</param>
+			<result name="success">/hrms/employeeBankAccountEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveBankAccount" class="com.enterio.hrms.employee.web.EmployeeAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+	<package name="e4" namespace="/Employee/Document" extends="common">
+		<action name="Upload/*" method="uploadDocument" class="com.enterio.hrms.employee.web.DocumentAction">
+			<param name="employeeUUID">{1}</param>
+			<result name="success">/hrms/employeeDocumentAdd.jsp</result>
+		</action>
+		<action name="Save" method="saveDocument" class="com.enterio.hrms.employee.web.DocumentAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*/*" method="deleteDocument" class="com.enterio.hrms.employee.web.DocumentAction">
+			<param name="employeeUUID">{1}</param>
+			<param name="documentUUID">{2}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Download/*/*" method="downloadDocument" class="com.enterio.hrms.employee.web.DocumentAction">
+			<param name="documentUUID">{1}</param>
+		</action>
+	</package>
+	
+</struts>

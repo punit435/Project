@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="co1" namespace="/Consultancy" extends="common">
+		<action name="Consultancies" method="consultancyList" class="com.enterio.hrms.consultancy.web.ConsultancyAction">
+			<result name="success">/hrms/consultancyList.jsp</result>
+		</action>
+		<action name="Details/*" method="consultancyDetails" class="com.enterio.hrms.consultancy.web.ConsultancyAction">
+			<param name="consultancyUUID">{1}</param>
+			<result name="success">/hrms/consultancyDetails.jsp</result>
+		</action>
+		<action name="Add" method="addConsultancy" class="com.enterio.hrms.consultancy.web.ConsultancyAction">
+			<result name="success">/hrms/consultancyAddEdit.jsp</result>
+		</action>
+		 <action name="Edit/*" method="editConsultancy" class="com.enterio.hrms.consultancy.web.ConsultancyAction">
+			<param name="consultancyUUID">{1}</param>
+			<result name="success">/hrms/consultancyAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveConsultancy" class="com.enterio.hrms.consultancy.web.ConsultancyAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*" method="deleteConsultancy" class="com.enterio.hrms.consultancy.web.ConsultancyAction">
+			<param name="consultancyUUID">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+	<package name="co2" namespace="/Consultancy/Contact" extends="common">
+		<action name="Add/*" method="addContact" class="com.enterio.hrms.consultancy.web.ContactAction">
+			<param name="consultancyUUID">{1}</param>
+			<result name="success">/hrms/consultancyContactAddEdit.jsp</result>
+		</action>
+		<action name="Edit/*/*" method="editContact" class="com.enterio.hrms.consultancy.web.ContactAction">
+			<param name="consultancyUUID">{1}</param>
+			<param name="contactUUID">{2}</param>
+			<result name="success">/hrms/consultancyContactAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveContact" class="com.enterio.hrms.consultancy.web.ContactAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*/*" method="deleteContact" class="com.enterio.hrms.consultancy.web.ContactAction">
+			<param name="consultancyUUID">{1}</param>
+			<param name="contactUUID">{2}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+</struts>

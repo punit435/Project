@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enterio.common.dao.CommonDAO">
+
+	<resultMap id="UserTypeRM" type="UserType">
+    	<id property="id" column="user_type_id"/>
+		<result property="name" column="user_type_name"/>
+		<result property="code" column="user_type_code"/>
+		<result property="uuid" column="user_type_uuid"/>
+		<association property="module" javaType="Module">
+			<id property="id" column="user_type_module_id" />
+			<result property="name" column="user_type_module_name" />
+			<result property="code" column="user_type_module_code" />
+			<result property="uuid" column="user_type_module_uuid" />
+		</association>
+    </resultMap>
+    
+    <resultMap id="ModuleRM" type="Module">
+		<id property="id" column="module_id"></id>
+		<result property="uuid" column="module_uuid"/>
+		<result property="name" column="module_name"/>
+		<result property="code" column="module_code"/>
+		<result property="isActive" column="module_is_active"/>
+	</resultMap>
+	
+	<resultMap id="UserModuleRM" type="UserModule">
+		<id property="id" column="user_module_id"/>
+		<result property="uuid" column="user_module_uuid"/>
+		<result property="isActive" column="user_is_active"/>
+		<result property="createdOn" column="user_module_created_on"/>
+ 		<association property="module" resultMap="ModuleRM"/>
+		<association property="userType" resultMap="UserTypeRM"/>
+		<association property="createdBy" javaType="User">
+			<id property="id" column="user_module_created_by_user_id" />
+			<result property="name" column="user_module_created_by_user_name" />
+		</association>
+	</resultMap> 
+
+	<resultMap id="CompanyRM" type="Company">
+		<id property="id" column="company_id"/>
+		<result property="uuid" column="company_uuid"/>
+		<result property="name" column="company_name"/>
+	</resultMap> 
+	
+	<resultMap id="BankRM" type="Bank">
+		<id property="id" column="bank_id"/>
+		<result property="name" column="bank_name"/>
+	</resultMap>
+	
+	<resultMap id="MonthRM" type="Month">
+		<id property="id" column="month_id"/>
+		<result property="name" column="month_name"/>
+	</resultMap>
+	
+	<resultMap id="FinancialYearRM" type="FinancialYear">
+		<id property="id" column="year_id"/>
+		<result property="name" column="year_name"/>
+	</resultMap>
+
+	<select id="getModules" resultMap="ModuleRM">
+		SELECT m.id AS module_id, m.uuid AS module_uuid, m.name AS module_name, m.code AS module_code
+		FROM "module" m
+		WHERE m.is_active = true AND m.code NOT IN ('ADM')
+		<if test="AssignedModules != null">
+			AND m.id NOT IN
+			(SELECT module_id FROM "user_module" WHERE user_id = #{UserId} AND module_id IN 
+			<foreach item="item" index="index" open="(" close=")" collection="AssignedModules" separator=",">
+		        #{item.id}
+		    </foreach>)
+		</if>
+		ORDER BY m.name
+    </select>
+    
+    <select id="getUserTypeByModuleUUID" resultMap="UserTypeRM">
+		SELECT ut.id AS user_type_id, ut.name AS user_type_name, ut.code AS user_type_code, ut.uuid AS user_type_uuid,
+		utm.id AS user_type_module_id, utm.name AS user_type_module_name, utm.code AS user_type_module_code, utm.uuid AS user_type_module_uuid
+		FROM "user_type" ut
+		LEFT JOIN "module" utm ON utm.id=ut.module_id
+		WHERE utm.uuid=#{moduleUUID}
+       	ORDER BY ut.name
+    </select>
+    
+    <select id="getUserModule" resultMap="UserModuleRM">
+		SELECT um.id AS user_module_id,
+		m.id AS module_id, m.name AS module_name, m.code AS module_code,
+		ut.id AS user_type_id, ut.name AS user_type_name, ut.code AS user_type_code,
+		c.id AS country_id, c.name AS country_name
+		FROM user_module um
+		LEFT JOIN "module" m ON um.module_id=m.id
+		LEFT JOIN "user_type" ut ON um.user_type_id=ut.id
+		LEFT JOIN "company" c ON um.company_id=c.id
+		WHERE um.is_active=1 AND um.user_id = #{UserId} AND um.module_id =#{ModuleId} 
+		<if test="UserTypeId > 0">
+			AND um.user_type_id=#{UserTypeId} 
+		</if>
+	</select>
+   
+    <select id="getModuleByUUID" resultMap="ModuleRM">
+		SELECT m.id AS module_id, m.uuid AS module_uuid, m.name AS module_name, m.code AS module_code
+     	FROM "module" m
+     	WHERE m.uuid = #{moduleUUID}
+    </select>
+    
+    <select id="getCompany" resultMap="CompanyRM">
+		SELECT c.id AS company_id, c.uuid AS company_uuid, c.name AS company_name
+		FROM "company" c
+    </select>
+
+	<select id="getBanks" resultMap="BankRM">
+		SELECT b.id AS bank_id, b.name AS bank_name
+		FROM "bank" b
+	</select>
+	
+	<select id="getMonths" resultMap="MonthRM">
+		SELECT m.id AS month_id, m.name AS month_name
+		FROM "month" m
+	</select>
+	
+	<select id="getMonthByID" resultMap="MonthRM">
+		SELECT m.id AS month_id, m.name AS month_name
+		FROM "month" m
+		WHERE m.id = #{monthId}
+	</select>
+	
+	<select id="getYears" resultMap="FinancialYearRM">
+		SELECT y.id AS year_id, y.name AS year_name
+		FROM "financial_year" y
+	</select>
+	
+	<select id="getYearById" resultMap="FinancialYearRM">
+		SELECT y.id AS year_id, y.name AS year_name
+		FROM "financial_year" y
+		WHERE y.id = #{financialYearsId}
+	</select>
+		
+	<insert id="saveUserModule" parameterType="UserModule" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "user_module"(user_id,  module_id, user_type_id, created_on, is_active, created_by_id, uuid, company_id)
+		VALUES(#{UserId}, #{ModuleId}, #{UserTypeId},current_timestamp, TRUE,  #{UserId}, #{uuid}, #{Company})
+	</insert>
+	
+</mapper>

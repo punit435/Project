@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enterio.hrms.common.dao.CommonDao">
+
+	<resultMap id="UserTypeRM" type="UserType">
+		<id property="id" column="user_type_id" />
+		<result property="name" column="user_type_name" />
+		<result property="code" column="user_type_code" />
+	</resultMap>
+	<resultMap id="VacancyStatusRM" type="VacancyStatus">
+		<id property="id" column="vacancy_status_id" />
+		<id property="uuid" column="vacancy_status_uuid" />
+		<result property="name" column="vacancy_status_name" />
+	</resultMap>
+
+	<resultMap id="CandidateTypeRM" type="CandidateType">
+		<id property="id" column="candidateType_id" />
+		<id property="uuid" column="candidateType_uuid" />
+		<result property="name" column="candidateType_name" />
+	</resultMap>
+	
+	<resultMap id="CandidateStatusRM" type="CandidateStatus">
+		<id property="id" column="candidate_status_id" />
+		<id property="uuid" column="candidate_status_uuid" />
+		<result property="name" column="candidate_status_name" />
+	</resultMap>
+	
+	<resultMap id="GenderRM" type="Gender">
+		<id property="id" column="gender_id" />
+		<id property="uuid" column="gender_uuid" />
+		<result property="name" column="gender_name" />
+	</resultMap>
+
+	<resultMap id="MaritalStatusRM" type="MaritalStatus">
+		<id property="id" column="marital_status_id" />
+		<result property="name" column="marital_status_name" />
+	</resultMap>
+	
+	<resultMap id="StateRM" type="State">
+		<id property="id" column="state_id" />
+		<result property="name" column="state_name" />
+	</resultMap>
+
+	<select id="getUserTypes" resultMap="UserTypeRM">
+		SELECT id AS user_type_id, name AS user_type_name, code AS user_type_code
+		FROM user_type
+	</select>
+	
+	<select id="getCandidateType" resultMap="CandidateTypeRM">
+		SELECT id AS candidateType_id, name AS candidateType_name
+		FROM hr_candidate_type
+	</select>
+	
+	<select id="getVacancyStatus" resultMap="VacancyStatusRM">
+		SELECT id AS vacancy_status_id, name AS vacancy_status_name
+		FROM hr_vacancy_status
+	</select>
+	
+	<select id="getCandidateStatus" resultMap="CandidateStatusRM">
+		SELECT id AS candidate_status_id, name AS candidate_status_name
+		FROM hr_candidate_status
+	</select>
+	
+	<select id="getGender" resultMap="GenderRM">
+		SELECT id AS gender_id, name AS gender_name
+		FROM gender
+	</select>
+	
+	<select id="getMaritalStatus" resultMap="MaritalStatusRM">
+		SELECT id AS marital_status_id, name AS marital_status_name
+		FROM marital_status
+	</select>
+
+	<select id="getStates" resultMap="StateRM">
+		SELECT id AS state_id, name AS state_name
+		FROM state
+	</select>
+	
+	<select id="getState" resultMap="StateRM">
+		SELECT id AS state_id, name AS state_name
+		FROM state
+		WHERE id=#{stateId}
+	</select>
+	
+</mapper>

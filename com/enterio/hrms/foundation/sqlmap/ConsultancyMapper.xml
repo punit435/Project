@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.consultancy.dao.ConsultancyDAO">
+
+	<resultMap type="Consultancy" id="ConsultancyRM">
+		<id property="id" column="consultancy_id"/>
+		<result property="uuid" column="consultancy_uuid"/>
+		<result property="name" column="consultancy_name"/>
+		<result property="createdOn" column="consultancy_created_on" />
+		<result property="deletedOn" column="consultancy_deleted_on" />
+		<result property="active" column="consultancy_is_active" />
+		<association property="createdBy" javaType="User">
+			<id property="id" column="created_by_id" />
+			<id property="uuid" column="created_by_uuid" />
+			<result property="name" column="created_by_name" />
+		</association>
+		<association property="deletedBy" javaType="User">
+			<id property="id" column="deleted_by_id" />
+			<id property="uuid" column="deleted_by_uuid" />
+			<result property="name" column="deleted_by_name" />
+		</association>
+		<collection property="contacts" resultMap="ConsultancyContactRM"/>		
+	</resultMap>
+ 	
+	<resultMap type="ConsultancyContact" id="ConsultancyContactRM">
+		<id property="id" column="consultancy_contact_id"/>
+		<result property="uuid" column="consultancy_contact_uuid"/>
+		<result property="name" column="consultancy_contact_name"/>
+		<result property="email" column="consultancy_contact_email"/>
+		<result property="mobile" column="consultancy_contact_mobile"/>
+		<result property="alternateMobile" column="consultancy_contact_alternate_mobile"/>
+		<result property="landline" column="consultancy_contact_landline"/>
+		<result property="alternateLandline" column="consultancy_contact_alternate_landline"/>
+	</resultMap>
+
+	<select id="getConsultancies" resultMap="ConsultancyRM">
+		SELECT co.id AS consultancy_id, co.uuid AS consultancy_uuid, co.name AS consultancy_name
+		FROM hr_consultancy co
+		LEFT JOIN company c ON co.company_id=c.id
+		WHERE c.uuid=#{companyUUID} AND co.is_active=TRUE
+		ORDER BY co.name		
+	</select>
+	
+	<select id="getConsultancy" resultMap="ConsultancyRM">
+		SELECT co.id AS consultancy_id, co.uuid AS consultancy_uuid, co.name AS consultancy_name,
+		cc.id AS consultancy_contact_id, cc.name AS consultancy_contact_name, cc.email AS consultancy_contact_email, 
+		cc.mobile AS consultancy_contact_mobile, cc.alternate_mobile AS consultancy_contact_alternate_mobile, cc.landline AS consultancy_contact_landline, 
+		cc.alternate_landline AS consultancy_contact_alternate_landline, cc.uuid AS consultancy_contact_uuid
+		FROM hr_consultancy co
+		LEFT JOIN company c ON co.company_id=c.id
+		LEFT JOIN hr_consultancy_contact cc ON cc.consultancy_id=co.id
+		WHERE co.uuid=#{consultancyUUID} AND cc.is_active=TRUE
+		ORDER BY cc.name
+	</select>
+	
+	<insert id="insertConsultancy" parameterType="Consultancy" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_consultancy(uuid, name, created_on, created_by_id, is_active, company_id)
+		VALUES(#{uuid}, #{name}, timezone('UTC'::text, now()), #{createdBy.id}, TRUE, #{company.id})
+	</insert>
+	
+	<update id="updateConsultancy" parameterType="Consultancy">
+		UPDATE hr_consultancy SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+		
+	<update id="deleteConsultancy">		
+ 		UPDATE hr_consultancy SET is_active=FALSE WHERE uuid=#{uuid}
+	</update>
+
+	<select id="getContact" resultMap="ConsultancyContactRM">
+		SELECT cc.id AS consultancy_contact_id, cc.name AS consultancy_contact_name, cc.email AS consultancy_contact_email, 
+		cc.mobile AS consultancy_contact_mobile, cc.alternate_mobile AS consultancy_contact_alternate_mobile, cc.landline AS consultancy_contact_landline, 
+		cc.alternate_landline AS consultancy_contact_alternate_landline, cc.uuid AS consultancy_contact_uuid 
+		FROM hr_consultancy_contact cc
+		WHERE cc.uuid=#{contactUUID}
+	</select>
+
+	<insert id="insertContact" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_consultancy_contact(uuid, name, email, mobile, alternate_mobile, landline, alternate_landline, consultancy_id, is_active)
+		VALUES (#{uuid}, #{name}, #{email}, #{mobile}, #{alternateMobile}, #{landline}, #{alternateLandline}, #{consultancy.id}, TRUE)
+	</insert>
+	
+	<update id="updateContact">
+		UPDATE hr_consultancy_contact SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+
+	<update id="deleteContact">
+		UPDATE hr_consultancy_contact SET is_active=FALSE WHERE uuid=#{uuid}
+	</update> 
+	
+<!-- 	
+	
+	<select id="getConsultancyContact" resultMap="ConsultancyContactRM">
+		SELECT cc.id AS consultancyccontact_id, cc.uuid AS consultancycontact_uuid, cc.name AS consultancycontact_name, cc.email AS consultancycontact_email,
+		cc.mobile AS consultancycontact_mobile, cc.alternate_mobile AS consultancycontact_alternatemobile, cc.landline AS consultancycontact_landline, cc.alternate_landline AS consultancycontact_alternatelandline, 
+		co.id AS consultancy_id, co.name AS consultancy_name 
+		FROM "hr_consultancy_contact" cc
+		LEFT JOIN hr_consultancy co on cc.consultancy_id = co.id
+		WHERE cc.uuid=#{consultancycontactUUID}
+	</select>
+	
+		
+	<delete id="deleteConsultancyContact">	
+ DELETE FROM "hr_consultancy_contact" WHERE uuid=#{consultancycontactUUID}
+	</delete>
+ -->
+ 
+</mapper>

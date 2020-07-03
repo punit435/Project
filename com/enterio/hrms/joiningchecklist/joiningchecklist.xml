@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="jcl1" namespace="/JoiningChecklist" extends="common">
+		<action name="JoiningChecklists" method="joiningChecklistList" class="com.enterio.hrms.joiningchecklist.web.JoiningChecklistAction">
+			<result name="success">/hrms/joiningChecklistList.jsp</result>
+		</action>
+		<action name="Add" method="addJoiningChecklist" class="com.enterio.hrms.joiningchecklist.web.JoiningChecklistAction">
+			<result name="success">/hrms/joiningChecklistAddEdit.jsp</result>
+		</action>
+		<action name="Edit/*" method="editJoiningChecklist" class="com.enterio.hrms.joiningchecklist.web.JoiningChecklistAction">
+			<param name="joiningChecklistUUID">{1}</param>
+			<result name="success">/hrms/joiningChecklistAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveJoiningChecklist" class="com.enterio.hrms.joiningchecklist.web.JoiningChecklistAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*" method="deleteJoiningChecklist" class="com.enterio.hrms.joiningchecklist.web.JoiningChecklistAction">
+			<param name="joiningChecklistUUID">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+</struts>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.designation.dao.DesignationDAO">
+
+	<resultMap id="DesignationRM" type="Designation">
+		<id property="id" column="designation_id"/>
+		<result property="uuid" column="designation_uuid"/>
+		<result property="name" column="designation_name"/>
+		<result property="active" column="designation_is_active"/>
+	</resultMap>
+	
+	<select id="getDesignation" resultMap="DesignationRM">
+		SELECT de.id AS designation_id, de.uuid AS designation_uuid, de.name AS designation_name, de.is_active AS designation_is_active
+		FROM designation de
+		WHERE de.uuid=#{designationUUID}
+	</select>
+	
+	<insert id="insertDesignation" parameterType="Designation" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO designation(uuid, name, department_id, is_active) VALUES(#{uuid}, #{name}, #{department.id}, TRUE)
+	</insert>
+	
+	<update id="updateDesignation" parameterType="Designation">
+		UPDATE designation SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+	
+	<update id="deleteDesignation" parameterType="Department">
+		UPDATE designation SET is_active=FALSE WHERE uuid=#{uuid}
+	</update>
+		
+</mapper>

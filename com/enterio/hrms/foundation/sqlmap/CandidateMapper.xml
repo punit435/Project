@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.candidate.dao.CandidateDAO">
+	<resultMap type="Candidate" id="CandidateRM">
+		<id property="id" column="candidate_id" />
+		<result property="uuid" column="candidate_uuid" />
+		<result property="firstName" column="candidate_firstName" />
+		<result property="lastName" column="candidate_lastName" />
+		<result property="mobile" column="candidate_mobile" />
+		<result property="email" column="candidate_email" />
+		<result property="alternateEmail" column="candidate_alternateEmail" />
+		<result property="alternateMobile" column="candidate_alternateMobile" />
+		<result property="experience" column="candidate_experience" />
+		<result property="skills" column="candidate_skills" />
+		<result property="referredByName" column="candidate_referredByName" />
+		<result property="file" column="candidate_file" />
+		<result property="createdOn" column="candidate_createdOn" />
+		<result property="selectionRemarks" column="candidate_selectionRemarks"/>
+		<result property="selectedOn" column="candidate_selectedOn"/>
+		<result property="assignedOn" column="candidate_assignedOn"/>
+		<result property="rejectionRemarks" column="candidate_rejectionRemarks"/>
+		<result property="rejectedOn" column="candidate_rejectedOn"/>
+		<result property="onhold" column="candidate_onhold"/>
+		<result property="onholdRemarks" column="candidate_onholdRemarks"/>
+		<association property="createdBy" javaType="User">
+			<id property="id" column="created_by_id" />
+			<id property="uuid" column="created_by_uuid" />
+			<result property="name" column="created_by_name" />
+		</association>
+		
+		<association property="selectedBy" javaType="User">
+			<id property="id" column="selected_by_id" />
+			<id property="uuid" column="selected_by_uuid" />
+			<result property="name" column="selected_by_name" />
+		</association>
+		
+		<association property="assignedBy" javaType="User">
+			<id property="id" column="assigned_by_id" />
+			<id property="uuid" column="assigned_by_uuid" />
+			<result property="name" column="assigned_by_name" />
+		</association>
+		
+		<association property="rejectedBy" javaType="User">
+			<id property="id" column="rejected_by_id" />
+			<id property="uuid" column="rejected_by_uuid" />
+			<result property="name" column="rejected_by_name" />
+		</association>
+		
+		<association property="onholdBy" javaType="User">
+			<id property="id" column="onhold_by_id" />
+			<id property="uuid" column="onhold_by_uuid" />
+			<result property="name" column="onhold_by_name" />
+		</association>
+	
+		<association property="vacancy" javaType="Vacancy">
+			<id property="id" column="hr_vacancy_id" />
+			<id property="uuid" column="hr_vacancy_uuid" />
+			<result property="skills" column="hr_vacancy_skills" />
+		</association> 
+		
+		<association property="consultancy" javaType="Consultancy">
+			<id property="id" column="hr_consultancy_id" />
+			<id property="uuid" column="hr_consultancy_uuid" />
+			<result property="name" column="hr_consultancy_name" />
+		</association>
+		
+		<association property="consultancyContact" javaType="ConsultancyContact">
+			<id property="id" column="hr_consultancyContact_id" />
+			<id property="uuid" column="hr_consultancyContact_uuid" />
+			<result property="name" column="hr_consultancyContact_name" />
+		</association>
+		
+		<association property="candidateType" javaType="CandidateType">
+			<id property="id" column="hr_candidateType_id" />
+			<id property="uuid" column="hr_candidateType_uuid" />
+			<result property="name" column="hr_candidateType_name" />
+		</association>
+		
+		<association property="vacancyStatus" javaType="VacancyStatus">
+			<id property="id" column="hr_vacancy_status_id" />
+			<id property="uuid" column="hr_vacancy_status_uuid" />
+			<result property="name" column="hr_vacancy_status_name" />
+		</association>
+		
+		<association property="gender" javaType="Gender">
+			<id property="id" column="gender_id" />
+			<id property="uuid" column="gender_uuid" />
+			<result property="name" column="gender_name" />
+	</association>
+		
+	</resultMap>
+	<select id="getCandidates" resultMap="CandidateRM">
+		SELECT cd.id AS candidate_id, cd.uuid AS candidate_uuid, cd.first_name AS candidate_firstName,cd.last_Name AS candidate_lastName,
+		cd.mobile AS candidate_mobile,cd.email AS candidate_email,cd.alternate_Email AS candidate_alternateEmail,
+		cd.alternate_Mobile AS candidate_alternateMobile,cd.experience AS candidate_experience, cd.skills AS candidate_skills,
+		cd.referred_By_Name AS candidate_referredByName,cd.created_On AS candidate_createdOn, cd.selection_remarks AS candidate_selectionRemarks, 
+		cd.onhold_remarks AS candidate_onholdRemarks, cd.rejection_remarks AS candidate_rejectionRemarks, cd.file AS candidate_file,
+		v.id AS hr_vacancy_id, v.skills AS hr_vacancy_skills,
+		co.id AS hr_consultancy_id, co.name AS hr_consultancy_name,
+		cc.id AS hr_consultancyContact_id, cc.name AS hr_consultancyContact_name,
+		ct.id AS hr_candidateType_id, ct.name AS hr_candidateType_name,
+		vs.id AS hr_vacancy_status_id, vs.name AS hr_vacancy_status_name,
+		g.id AS gender_id, g.name AS gender_name
+		FROM "hr_candidate" cd
+		LEFT JOIN hr_vacancy v on cd.hr_vacancy_id = v.id
+		LEFT JOIN hr_consultancy co on cd.hr_consultancy_id = co.id
+		LEFT JOIN hr_consultancy_contact cc on cd.hr_consultancy_contact_id = cc.id
+		LEFT JOIN hr_candidate_type ct on cd.hr_candidate_type_id = ct.id
+		LEFT JOIN hr_vacancy_status vs on cd.hr_vacancy_status_id = vs.id
+		LEFT JOIN gender g on cd.gender_id = g.id
+	</select>
+
+	<select id="getCandidate" resultMap="CandidateRM">
+		SELECT cd.id AS candidate_id, cd.uuid AS candidate_uuid, cd.first_name AS candidate_firstName,cd.last_Name AS candidate_lastName,
+		cd.mobile AS candidate_mobile,cd.email AS candidate_email,cd.alternate_Email AS candidate_alternateEmail,
+		cd.alternate_Mobile AS candidate_alternateMobile,cd.experience AS candidate_experience, cd.skills AS candidate_skills,
+		cd.referred_By_Name AS candidate_referredByName,cd.created_On AS candidate_createdOn, cd.selection_remarks AS candidate_selectionRemarks, 
+		cd.onhold_remarks AS candidate_onholdRemarks, cd.rejection_remarks AS candidate_rejectionRemarks, cd.file AS candidate_file,
+		v.id AS hr_vacancy_id, v.skills AS hr_vacancy_skills,
+		co.id AS hr_consultancy_id, co.name AS hr_consultancy_name,
+		cc.id AS hr_consultancyContact_id, cc.name AS hr_consultancyContact_name,
+		ct.id AS hr_candidateType_id, ct.name AS hr_candidateType_name,
+		vs.id AS hr_vacancy_status_id, vs.name AS hr_vacancy_status_name,
+		g.id AS gender_id, g.name AS gender_name
+		FROM "hr_candidate" cd
+		LEFT JOIN hr_vacancy v on cd.hr_vacancy_id = v.id
+		LEFT JOIN hr_consultancy co on cd.hr_consultancy_id = co.id
+		LEFT JOIN hr_consultancy_contact cc on cd.hr_consultancy_contact_id = cc.id
+		LEFT JOIN hr_candidate_type ct on cd.hr_candidate_type_id = ct.id
+		LEFT JOIN hr_vacancy_status vs on cd.hr_vacancy_status_id = vs.id
+		LEFT JOIN gender g on cd.gender_id = g.id
+		WHERE cd.uuid=#{candidateUUID}
+	</select>
+
+	<insert id="insertCandidate" parameterType="Candidate" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "hr_candidate" ( uuid, first_name, last_name, mobile, email, alternate_email, 
+		alternate_mobile, experience, skills, referred_by_name, created_by_id, assigned_by_id, 
+		selected_by_id, selection_remarks, rejected_by_id, rejection_remarks, onhold_by_id, onhold_remarks, file,
+		hr_vacancy_id, hr_consultancy_id, hr_consultancy_contact_id, hr_candidate_type_id, hr_vacancy_status_id,gender_id, created_on, hr_candidate_status_id)
+		VALUES(#{uuid}, #{firstName},#{lastName}, #{mobile}, #{email}, #{alternateEmail}, #{alternateMobile}, #{experience}, #{skills}, #{referredByName}, #{createdBy.id}, #{assignedBy.id},
+		#{selectedBy.id}, #{selectionRemarks}, #{rejectedBy.id}, #{rejectionRemarks}, #{onholdBy.id}, #{onholdRemarks}, #{file}, 1, #{consultancy.id}, #{consultancyContact.id}, #{candidateType.id}, #{vacancyStatus.id}, #{gender.id}, current_timestamp, 1)
+	</insert>
+
+	<update id="updateCandidate" parameterType="Candidate">
+		UPDATE "hr_candidate" SET first_name=#{firstName}, last_name = #{lastName}, mobile = #{mobile},
+		 email=#{email}, alternate_email=#{alternateEmail},alternate_mobile=#{alternateMobile}, experience=#{experience}, skills=#{skills},
+		 referred_by_name=#{referredByName}, assigned_by_id=#{assignedBy.id}, selected_by_id=#{selectedBy.id}, selection_remarks=#{selectionRemarks}, rejected_on=#{rejectedOn}, rejected_by_id=#{rejectedBy.id}, rejection_remarks=#{rejectionRemarks}, onhold_on=#{onhold}, onhold_by_id=#{onholdBy.id},onhold_remarks=#{onholdRemarks}, file=#{file}, hr_vacancy_id=#{vacancy.id} , hr_consultancy_id=#{consultancy.id},hr_consultancy_contact_id=#{consultancyContact.id}, 
+		 hr_candidate_type_id=#{candidateType.id}, hr_vacancy_status_id=#{vacancyStatus.id} 
+		 WHERE uuid=#{uuid}
+	</update>
+
+	<delete id="deleteCandidate">
+		DELETE FROM "hr_candidate" WHERE uuid=#{candidateUUID}
+	</delete>
+
+</mapper>

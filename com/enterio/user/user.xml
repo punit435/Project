@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="u1" namespace="/User" extends="common">
+		<action name="Dashboard" method="dashboard" class="com.enterio.user.web.UserAction">
+			<result name="success">/dashboard.jsp</result>
+		</action>
+		<action name="ChangePassword" method="changePassword" class="com.enterio.user.web.UserAction">
+			<result>/changePassword.jsp</result>
+		</action>
+		<action name="SavePassword" method="savePassword" class="com.enterio.user.web.UserAction">
+			<result>/changePasswordMessage.jsp</result>
+		</action>
+	</package>
+	<package name="u2" namespace="/User/Policy/Compliance" extends="common">
+		<action name="Pending" method="pendingPolicies" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<result name="success">/userPendingPolicyList.jsp</result>
+		</action>
+		<action name="Completed" method="completedPolicies" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<result name="success">/userCompletedPolicyList.jsp</result>
+		</action>
+	</package>
+</struts>

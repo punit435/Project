@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.department.dao.DepartmentDAO">
+
+	<resultMap type="Department" id="DepartmentRM">
+		<id property="id" column="department_id"/>
+		<result property="uuid" column="department_uuid"/>
+		<result property="name" column="department_name"/>
+		<result property="active" column="department_is_active"/>
+		<collection property="designations" resultMap="com.enterio.hrms.designation.dao.DesignationDAO.DesignationRM"/>		
+	</resultMap>
+
+	<select id="getDepartments" resultMap="DepartmentRM">
+		SELECT d.id AS department_id, d.uuid AS department_uuid, d.name AS department_name
+		FROM department d
+		LEFT JOIN company c ON d.company_id=c.id 
+		WHERE c.uuid=#{companyUUID} AND d.is_active=TRUE
+		ORDER BY d.name
+	</select>
+	
+	<select id="getDepartment" resultMap="DepartmentRM">
+		SELECT d.id AS department_id, d.uuid AS department_uuid, d.name AS department_name, d.is_active AS department_is_active,
+		de.id AS designation_id, de.uuid AS designation_uuid, de.name AS designation_name
+		FROM department d
+		LEFT JOIN designation de ON de.department_id=d.id AND de.is_active=TRUE
+		WHERE d.uuid=#{departmentUUID} 
+		ORDER BY de.name
+	</select>
+	
+	<insert id="insertDepartment" parameterType="Department" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO department(uuid, name, company_id, is_active) VALUES(#{uuid}, #{name}, #{company.id}, TRUE)
+	</insert>
+	
+	<update id="updateDepartment" parameterType="Department">
+		UPDATE department SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+		
+	<update id="deleteDepartment" parameterType="Department">
+		UPDATE department SET is_active=FALSE WHERE uuid=#{uuid}
+	</update>
+
+</mapper>

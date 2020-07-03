@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.policygroup.dao.PolicyGroupDAO">
+	
+	<resultMap type="PolicyGroup" id="PolicyGroupRM">
+		<id property="id" column="policy_group_id" />
+		<result property="uuid" column="policy_group_uuid" />
+		<result property="name" column="policy_group_name" />
+		<result property="createdOn" column="policy_group_created_on" />
+		<result property="deletedOn" column="policy_group_deleted_on" />
+		<result property="active" column="policy_group_is_active" />
+		<association property="createdBy" javaType="User">
+			<id property="id" column="created_by_id" />
+			<id property="uuid" column="created_by_uuid" />
+			<result property="name" column="created_by_name" />
+		</association>
+		<association property="deletedBy" javaType="User">
+			<id property="id" column="deleted_by_id" />
+			<id property="uuid" column="deleted_by_uuid" />
+			<result property="name" column="deleted_by_name" />
+		</association>
+		<collection property="policies" ofType="Policy">
+			<id property="id" column="pg_policy_id" />
+			<result property="uuid" column="pg_policy_uuid" />
+			<result property="name" column="pg_policy_name" />
+			<result property="file" column="pg_policy_file_name" />
+			<result property="effectiveFrom" column="pg_policy_effective_from" />
+			<result property="revisionNumber" column="pg_policy_revision_number" />
+		</collection>
+	</resultMap>
+	
+	<resultMap type="Policy" id="PolicyRM">
+		<id property="id" column="policy_id" />
+		<result property="uuid" column="policy_uuid" />
+		<result property="name" column="policy_name" />
+		<result property="file" column="policy_file_name" />
+		<result property="effectiveFrom" column="policy_effective_from" />
+		<result property="revisionNumber" column="policy_revision_number" />
+		<result property="createdOn" column="policy_created_on" />
+		<result property="deletedOn" column="policy_deleted_on" />
+		<result property="active" column="policy_is_active" />
+		<association property="createdBy" javaType="User">
+			<id property="id" column="created_by_id" />
+			<id property="uuid" column="created_by_uuid" />
+			<result property="name" column="created_by_name" />
+		</association>
+		<association property="group" javaType="PolicyGroup">
+			<id property="id" column="policy_group_id" />
+			<id property="uuid" column="policy_group_uuid" />
+			<result property="name" column="policy_group_name" />
+		</association>
+	</resultMap>
+	
+	<select id="getPolicyGroups" resultMap="PolicyGroupRM">
+		SELECT pg.id AS policy_group_id, pg.uuid AS policy_group_uuid, pg.name AS policy_group_name, pg.is_active AS policy_group_is_active
+		FROM hr_policy_group pg
+		LEFT JOIN company c ON pg.company_id=c.id 
+		WHERE c.uuid=#{companyUUID} AND pg.is_active=TRUE
+		ORDER BY pg.name
+	</select>
+	
+	<select id="getPolicyGroup" resultMap="PolicyGroupRM">
+		SELECT pg.id AS policy_group_id, pg.uuid AS policy_group_uuid, pg.name AS policy_group_name, pg.created_on AS policy_group_createdOn, 
+		pg.is_active AS policy_group_isActive, cb.id AS created_by_id, cb.uuid AS created_by_uuid, cb.name AS created_by_name,
+		p.id AS pg_policy_id, p.name AS pg_policy_name, p.file_name AS pg_policy_file_name, p.effective_from AS pg_policy_effective_from, 
+		p.revision_number AS pg_policy_revision_number, p.uuid AS pg_policy_uuid
+		FROM hr_policy_group pg
+		LEFT JOIN "user" cb ON cb.id=pg.created_by_id
+		LEFT JOIN hr_policy p ON (pg.id=p.hr_policy_group_id AND p.is_active=TRUE)
+		WHERE pg.uuid=#{policyGroupUUID}
+		ORDER BY p.name
+	</select>
+	
+	<insert id="insertPolicyGroup" parameterType="PolicyGroup" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_policy_group(uuid, name, created_on, created_by_id, is_active, company_id)
+		VALUES(#{uuid}, #{name}, timezone('UTC'::text, now()), #{createdBy.id}, TRUE, #{company.id})
+	</insert>
+	
+	<update id="updatePolicyGroup">
+		UPDATE hr_policy_group SET name=#{name} WHERE uuid=#{uuid}
+	</update>
+	
+	<update id="deletePolicyGroup">
+		UPDATE hr_policy_group SET is_active=FALSE WHERE uuid=#{uuid}
+	</update>
+	
+	<select id="getPolicy" resultMap="PolicyRM">
+		SELECT p.id AS policy_id, p.name AS policy_name, p.file_name AS policy_file_name, p.effective_from AS policy_effective_from, 
+		p.revision_number AS policy_revision_number, p.created_on AS policy_created_on, p.is_active AS policy_is_active, p.uuid AS policy_uuid,
+		pg.id AS policy_group_id, pg.uuid AS policy_group_uuid, pg.name AS policy_group_name,
+		cb.id AS created_by_id, cb.uuid AS created_by_uuid, cb.name AS created_by_name
+		FROM hr_policy p
+		LEFT JOIN hr_policy_group pg ON p.hr_policy_group_id=pg.id
+		LEFT JOIN "user" cb ON cb.id=p.created_by_id
+		WHERE p.uuid=#{policyUUID}
+	</select>	
+	
+	<insert id="insertPolicy" parameterType="Policy" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_policy(uuid, name, file_name, effective_from, hr_policy_group_id, revision_number, created_on, created_by_id, is_active, company_id)
+		VALUES(#{uuid}, #{name}, #{file}, #{effectiveFrom}, #{group.id}, #{revisionNumber}, timezone('UTC'::text, now()), #{createdBy.id}, TRUE, #{company.id})
+	</insert>
+	
+	<update id="updatePolicy">
+		UPDATE hr_policy SET name=#{name}, effective_from=#{effectiveFrom} WHERE uuid=#{uuid}
+	</update>
+
+	<update id="deletePolicy">
+		UPDATE hr_policy SET is_active=FALSE WHERE uuid=#{uuid}
+	</update>
+	
+	<select id="getPendingPolicies" resultMap="PolicyRM">
+		SELECT p.id AS policy_id, p.name AS policy_name, p.file_name AS policy_file_name, p.effective_from AS policy_effective_from, 
+		p.revision_number AS policy_revision_number, p.created_on AS policy_created_on, p.is_active AS policy_is_active, p.uuid AS policy_uuid,
+		pg.id AS policy_group_id, pg.uuid AS policy_group_uuid, pg.name AS policy_group_name
+		FROM hr_policy p
+		LEFT JOIN hr_policy_group pg ON p.hr_policy_group_id=pg.id
+		LEFT JOIN company c ON c.id=p.company_id
+		WHERE c.uuid=#{companyUUID} AND p.is_active=TRUE
+	</select>	
+	
+</mapper>

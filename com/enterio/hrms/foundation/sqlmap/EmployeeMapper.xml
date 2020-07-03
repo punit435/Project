@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.employee.dao.EmployeeDAO">
+
+	<resultMap id="EmployeeRM" type="Employee">
+		<id property="id" column="employee_id"/>
+		<result property="uuid" column="employee_uuid"/>
+		<result property="code" column="employee_code"/>
+		<result property="firstName" column="employee_first_name"/>
+		<result property="lastName" column="employee_last_name"/>
+		<result property="dateOfBirth" column="employee_date_of_birth"/>
+		<result property="officialEmail" column="employee_official_email"/>
+		<result property="personalEmail" column="employee_personal_email"/>
+		<result property="mobile" column="employee_mobile"/>
+		<result property="annualCTC" column="employee_annual_ctc"/>
+		<result property="fatherName" column="employee_father_name"/>
+		<result property="motherMaidenName" column="employee_mother_maiden_name"/>
+		<result property="addressSame" column="employee_is_address_same"/>
+		<result property="joiningDate" column="employee_joining_date"/>
+		<result property="probationEndDate" column="employee_probation_end_date"/>
+		<result property="resignationDate" column="employee_resignation_date"/>
+		<result property="relieveingDate" column="employee_relieveing_date"/>
+		<result property="bankAccountNew" column="employee_is_bank_account_new"/>
+		<result property="bankAccountNumber" column="employee_bank_account_number"/>
+		<result property="bankBranch" column="employee_bank_branch"/>
+		<result property="branchIFSC" column="employee_branch_ifsc"/>
+		<result property="nameInBankAccount" column="employee_name_in_bank_account"/>
+		<result property="spouseName" column="employee_spouse_name"/>
+		<result property="spouseMobile" column="employee_spouse_mobile"/>
+		<result property="spouseEmployer" column="employee_spouse_employer"/>
+		<result property="emergencyContactName" column="employee_emergency_contact_name"/>
+		<result property="emergencyContactRelation" column="employee_emergency_contact_relation"/>
+		<result property="emergencyContactMobile" column="employee_emergency_contact_mobile"/>
+		<result property="emergencyContactAlternatePhone" column="employee_emergency_contact_alternate_phone"/>
+		<association property="designation" javaType="Designation">
+			<id property="id" column="designation_id" />
+			<id property="uuid" column="designation_uuid" />
+			<result property="name" column="designation_name" />
+			<association property="department" javaType="Department">
+				<id property="id" column="department_id" />
+				<id property="uuid" column="department_uuid" />
+				<result property="name" column="department_name" />
+			</association> 
+		</association> 
+		<association property="reportsTo" javaType="User">
+			<id property="id" column="rt_user_id" />
+			<id property="uuid" column="rt_user_uuid" />
+			<result property="name" column="rt_user_name" />
+		</association> 
+		<association property="bank" javaType="Bank">
+			<id property="id" column="bank_id" />
+			<result property="name" column="bank_name" />
+		</association> 
+		<association property="maritalStatus" javaType="MaritalStatus">
+			<id property="id" column="marital_status_id" />
+			<result property="name" column="marital_status_name" />
+		</association> 
+	  	<association property="candidate" javaType="Candidate">
+			<id property="id" column="hr_candidate_id" />
+			<id property="uuid" column="hr_candidate_uuid" />
+			<result property="firstName" column="hr_candidate_name" />
+		</association>
+		<association property="company" javaType="Company">
+			<id property="id" column="company_id" />
+			<id property="uuid" column="company_uuid" />
+			<result property="name" column="company_name" />
+		</association>
+		<collection property="addresses" resultMap="EmployeeAddressRM"/>
+		<collection property="documents" resultMap="EmployeeDocumentRM"/>
+	</resultMap> 
+
+	<resultMap id="EmployeeAddressRM" type="EmployeeAddress">
+		<id property="id" column="employee_address_id"/>
+		<result property="uuid" column="employee_address_uuid"/>
+		<result property="line1" column="employee_address_line1"/>
+		<result property="line2" column="employee_address_line2"/>
+		<result property="city" column="employee_address_city"/>
+		<result property="pincode" column="employee_address_pincode"/>
+		<result property="type" column="employee_address_type"/>
+		<association property="state" javaType="State">
+			<id property="id" column="state_id" />
+			<result property="name" column="state_name" />
+		</association> 
+	</resultMap>
+	
+	<resultMap id="EmployeeDocumentRM" type="EmployeeDocument">
+		<id property="id" column="employee_document_id"/>
+		<result property="uuid" column="employee_document_uuid"/>
+		<result property="documentNumber" column="employee_document_document_number"/>
+		<result property="file" column="employee_document_file_name"/>
+		<association property="documentType" javaType="DocumentType">
+			<id property="id" column="documentType_id" />
+			<id property="uuid" column="documentType_uuid" />
+			<result property="name" column="documentType_name" />
+		</association>
+		<association property="uploadedBy" javaType="User">
+			<id property="id" column="user_id" />
+			<result property="name" column="user_name" />
+			<result property="uuid" column="user_uuid" />
+		</association> 
+	</resultMap>
+	
+	<resultMap id="EmployeeAttendanceRM" type="EmployeeAttendance">
+		<id property="id" column="employee_attendance_id"/>
+		<result property="uuid" column="employee_attendance_uuid"/>
+		<result property="latitude" column="employee_attendance_latitude"/>
+		<result property="longitude" column="employee_attendance_longitude"/>
+		<result property="attendanceDate" column="employee_attendance_attendance_date"/>
+		<result property="timeStamp" column="employee_attendance_timeStamp"/>
+		<result property="createdOn" column="employee_attendance_createdOn"/>
+		<association property="employee" javaType="Employee">
+			<id property="id" column="employee_id" />
+			<id property="uuid" column="employee_uuid" />
+			<result property="firstName" column="employee_name" />
+		</association>
+		<association property="createdBy" javaType="User">
+			<id property="id" column="user_id" />
+			<result property="name" column="user_name" />
+			<result property="uuid" column="user_uuid" />
+		</association> 
+		<association property="attendanceType" javaType="AttendanceType">
+			<id property="id" column="attendanceType_id" />
+			<result property="name" column="attendanceType_name" />
+		</association>
+	</resultMap>
+	
+	<resultMap id="PaySlipRM" type="PaySlip">
+		<id property="id" column="paySlip_id"/>
+		<result property="uuid" column="paySlip_uuid"/>
+		<result property="uploadedOn" column="paySlip_uploadedOn"/>
+		<result property="file" column="paySlip_file"/>
+		<association property="employee" javaType="Employee">
+			<id property="id" column="employee_id" />
+			<id property="uuid" column="employee_uuid" />
+			<result property="firstName" column="employee_name" />
+		</association>
+		<association property="uploadedBy" javaType="User">
+			<id property="id" column="user_id" />
+			<result property="name" column="user_name" />
+			<result property="uuid" column="user_uuid" />
+		</association> 
+		<association property="month" javaType="Month">
+			<id property="id" column="month_id" />
+			<result property="name" column="month_name" />
+		</association>
+		<association property="financialYear" javaType="FinancialYear">
+			<id property="id" column="year_id"/>
+			<result property="name" column="year_name"/>
+		</association>
+	</resultMap>
+	
+	<select id="getEmployees" resultMap="EmployeeRM">
+		SELECT e.id AS employee_id, e.uuid AS employee_uuid, e.code AS employee_code, e.first_name AS employee_first_name,
+		e.last_name AS employee_last_name, e.personal_email AS employee_personal_email, e.official_email AS employee_official_email, e.mobile AS employee_mobile, 
+		ds.id AS designation_id, ds.name AS designation_name, ds.uuid AS designation_id, d.id AS department_id, d.name AS department_name, d.uuid AS designation_id,
+		rtu.id AS rt_user_id, rtu.name AS rt_user_name, rtu.uuid AS rt_user_uuid
+		FROM hr_employee e
+		LEFT JOIN designation ds on e.designation_id=ds.id
+		LEFT JOIN department d on ds.department_id=d.id
+		LEFT JOIN "user" rtu ON e.reports_to_id=rtu.id
+		WHERE e.company_id=#{companyId}
+		ORDER BY CONCAT(e.first_name, ' ',e.last_name)
+	</select>
+	
+	<select id="getEmployeeByUUID" resultMap="EmployeeRM">
+		SELECT e.id AS employee_id, e.uuid AS employee_uuid, e.code AS employee_code, e.first_name AS employee_first_name, e.last_name AS employee_last_name, 
+		e.date_of_birth AS employee_date_of_birth, e.personal_email AS employee_personal_email, e.official_email AS employee_official_email, 
+		e.mobile AS employee_mobile, e.annual_ctc AS employee_annual_ctc, spouse_name AS employee_spouse_name, spouse_mobile AS employee_spouse_mobile,
+		spouse_employer AS employee_spouse_employer, emergency_contact_name AS employee_emergency_contact_name, 
+		emergency_contact_relation AS employee_emergency_contact_relation, emergency_contact_mobile AS employee_emergency_contact_mobile,
+		emergency_contact_alternate_phone AS employee_emergency_contact_alternate_phone,
+		e.father_name AS employee_father_name, e.mother_maiden_name AS employee_mother_maiden_name,	e.is_address_same AS employee_is_address_same, 
+		e.joining_date AS employee_joining_date, e.probation_end_date AS employee_probation_end_date, e.resignation_date AS employee_resignation_date,
+		e.relieveing_date AS employee_relieveing_date, e.is_bank_account_new AS employee_is_bank_account_new, e.bank_account_number AS employee_bank_account_number,
+		e.bank_branch AS employee_bank_branch, e.branch_ifsc AS employee_branch_ifsc, e.name_in_bank_account AS employee_name_in_bank_account,
+		ds.id AS designation_id, ds.name AS designation_name, ds.uuid AS designation_uuid, d.id AS department_id, d.name AS department_name, d.uuid AS department_uuid,
+		rtu.id AS rt_user_id, rtu.name AS rt_user_name, rtu.uuid AS rt_user_uuid, ms.id AS marital_status_id, ms.name AS marital_status_name,
+		ea.id AS employee_address_id, ea.uuid AS employee_address_uuid, ea.line1 AS employee_address_line1, ea.line2 AS employee_address_line2,
+		ea.city AS employee_address_city, ea.pincode AS employee_address_pinCode, ea.address_type AS employee_address_type,
+		s.id AS state_id, s.name AS state_name, b.id AS bank_id, b.name AS bank_name, ed.id AS employee_document_id, ed.uuid AS employee_document_uuid, 
+		ed.document_number AS employee_document_document_number, ed.file_name AS employee_document_file_name, dt.id AS documentType_id, dt.name AS documentType_name
+		FROM hr_employee e
+		LEFT JOIN designation ds on e.designation_id=ds.id
+		LEFT JOIN department d on ds.department_id=d.id
+		LEFT JOIN "user" rtu ON e.reports_to_id=rtu.id
+		LEFT JOIN marital_status ms ON e.marital_status_id=ms.id
+		LEFT JOIN hr_employee_address ea ON ea.hr_employee_id=e.id
+		LEFT JOIN state s ON ea.state_id=s.id
+		LEFT JOIN bank b ON e.bank_id=b.id
+		LEFT JOIN hr_employee_document ed ON ed.hr_employee_id=e.id 
+		LEFT JOIN hr_document_type dt ON dt.id=ed.hr_document_type_id
+		WHERE e.uuid=#{employeeUUID}
+	</select>
+	
+	<insert id="insertEmployee" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_employee(uuid, code, first_name, last_name, date_of_birth, personal_email, official_email, mobile, joining_date, probation_end_date, 
+			company_id, designation_id, reports_to_id, is_address_same, is_bank_account_new, created_on, created_by_id, spouse_name, spouse_mobile, spouse_employer,
+			emergency_contact_name, emergency_contact_relation, emergency_contact_mobile, emergency_contact_alternate_phone, marital_status_id)
+		VALUES (#{uuid}, #{code}, #{firstName}, #{lastName}, #{dateOfBirth}, #{personalEmail}, #{officialEmail}, #{mobile}, #{joiningDate}, #{probationEndDate}, 
+			#{company.id}, #{designation.id}, #{reportsTo.id}, FALSE, FALSE, timezone('UTC'::text, now()), #{createdBy.id}, #{spouseName}, #{spouseMobile}, #{spouseEmployer}, 
+			#{emergencyContactName}, #{emergencyContactRelation}, #{emergencyContactMobile}, #{emergencyContactAlternatePhone}, #{maritalStatus.id})
+	</insert>
+	
+	<update id="updateEmployee">
+		UPDATE hr_employee SET code=#{code}, first_name=#{firstName}, last_name=#{lastName}, date_of_birth=#{dateOfBirth}, personal_email=#{personalEmail}, 
+		official_email=#{officialEmail}, mobile=#{mobile}, joining_date=#{joiningDate}, probation_end_date=#{probationEndDate},
+		designation_id=#{designation.id}, reports_to_id=#{reportsTo.id}, spouse_name=#{spouseName}, spouse_mobile=#{spouseMobile}, spouse_employer=#{spouseEmployer},
+		emergency_contact_name=#{emergencyContactName}, emergency_contact_relation=#{emergencyContactRelation}, emergency_contact_mobile=#{emergencyContactMobile}, 
+		emergency_contact_alternate_phone=#{emergencyContactAlternatePhone}, marital_status_id=#{maritalStatus.id}
+		WHERE uuid=#{uuid} 
+	</update>
+	
+	<select id="getAddressByType" resultMap="EmployeeAddressRM">
+		SELECT ea.id AS employee_address_id, ea.uuid AS employee_address_uuid, ea.line1 AS employee_address_line1, ea.line2 AS employee_address_line2,
+		ea.city AS employee_address_city, ea.pincode AS employee_address_pincode, ea.address_type AS employee_address_type, s.id AS state_id, s.name AS state_name
+		FROM hr_employee_address ea
+		LEFT JOIN hr_employee e ON ea.hr_employee_id=e.id
+		LEFT JOIN state s ON s.id=ea.state_id
+		WHERE e.uuid=#{EmployeeUUID} AND UPPER(ea.address_type)=UPPER(#{AddressType})
+	</select>
+	
+	<insert id="insertAddress" parameterType="EmployeeAddress" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_employee_address(uuid, line1, line2, city, pincode, state_id, hr_employee_id, address_type)
+		VALUES (#{uuid}, #{line1}, #{line2}, #{city}, #{pincode}, #{state.id}, #{employee.id}, UPPER(#{type}))
+	</insert>
+	
+	<update id="updateAddress" parameterType="EmployeeAddress">
+		UPDATE hr_employee_address SET line1=#{line1}, line2=#{line2}, city=#{city}, pincode=#{pincode}, state_id=#{state.id} WHERE uuid=#{uuid}
+	</update>
+	
+	<update id="updateBankAccount">
+		UPDATE hr_employee SET bank_account_number=#{bankAccountNumber}, bank_branch=#{bankBranch}, branch_ifsc=#{branchIFSC}, name_in_bank_account=#{nameInBankAccount},
+		bank_id=#{bank.id}, is_bank_account_new=#{bankAccountNew} 
+		WHERE uuid=#{uuid} 
+	</update>
+	
+	<select id="getPendingDocumentTypes" resultMap="com.enterio.hrms.documenttype.dao.DocumentTypeDAO.DocumentTypeRM">
+		SELECT dt.id AS document_type_id, dt.uuid AS document_type_uuid, dt.name AS document_type_name
+		FROM hr_document_type dt
+		WHERE dt.company_id=#{CompanyId} AND dt.is_active=true
+		AND dt.id NOT IN (
+			SELECT ed.hr_document_type_id 
+			FROM hr_employee_document ed, hr_employee e
+			WHERE e.uuid=#{EmployeeUUID} AND ed.hr_employee_id=e.id 
+		)	
+		ORDER BY dt.name
+	</select>	 
+	
+	<select id="getDocumentByUUID" resultMap="EmployeeDocumentRM">
+		SELECT ed.id AS employee_document_id, ed.uuid AS employee_document_uuid, ed.document_number AS employee_document_document_number, 
+		ed.file_name AS employee_document_file_name, dt.id AS documentType_id, dt.name AS documentType_name
+		FROM hr_employee_document ed
+		LEFT JOIN hr_document_type dt ON dt.id=ed.hr_document_type_id
+		WHERE ed.uuid=#{documentUUID}
+	</select>
+	
+	<insert id="insertDocument" parameterType="EmployeeDocument" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_employee_document(uuid, document_number, file_name, uploaded_on, uploaded_by_id, hr_employee_id, hr_document_type_id)
+		VALUES (#{uuid}, #{documentNumber}, #{file}, current_timestamp, #{uploadedBy.id}, #{employee.id}, #{documentType.id})
+	</insert>
+	
+	<delete id="deleteDocument">
+		DELETE FROM hr_employee_document WHERE uuid=#{uuid}
+	</delete>
+	
+	<insert id="insertEmployeeAttendance" parameterType="EmployeeAttendance" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "hr_employee_attendance"(uuid, latitude, longitude, time_stamp, attendance_date, employee_id, attendance_type_id, created_by_id, created_on)
+		VALUES (#{uuid}, #{latitude}, #{longitude}, current_timestamp, #{attendanceDate}, #{employee.id}, #{attendanceType.id}, #{createdBy.id}, current_timestamp)
+	</insert>
+	
+	<update id="updateEmployeeAttendance" parameterType="EmployeeAttendance">
+		UPDATE hr_employee_attendance SET attendance_type_id = #{attendanceType.id} WHERE uuid=#{uuid}
+	</update>
+	
+	<select id="getAttendenceForEmployee" resultMap="EmployeeAttendanceRM">
+		SELECT ea.id AS employee_attendance_id, ea.uuid AS employee_attendance_uuid, ea.latitude AS employee_attendance_latitude, ea.longitude AS employee_attendance_longitude,
+		ea.attendance_date AS employee_attendance_attendance_date, ea.created_on AS employee_attendance_createdOn,
+		e.id AS employee_id, e.uuid AS employee_uuid, e.first_name AS employee_name,
+		at.id AS attendanceType_id, at.name AS attendanceType_name
+		FROM hr_employee_attendance ea
+		LEFT JOIN hr_employee e ON ea.employee_id=e.id
+		LEFT JOIN hr_attendance_type at ON ea.attendance_type_id=at.id
+		WHERE e.id=#{employeeId}
+		ORDER BY ea.attendance_date
+	</select>
+	
+	<select id="getAttendanceByLatestDate" resultMap="EmployeeAttendanceRM">
+		SELECT ea.id as employee_attendace_id, ea.attendance_date as employee_attendance_attendance_date,
+		e.id as employe_id, e.first_name as employee_name
+		FROM hr_employee_attendance ea
+		LEFT JOIN hr_employee e ON e.id = ea.employee_id
+		where e.id=#{employeeId}
+		ORDER BY ea.created_on DESC  
+		LIMIT 1  
+	</select>
+
+	<select id="getAttendanceByMonth" resultMap="EmployeeAttendanceRM">
+		SELECT ea.id AS employee_attendance_id, ea.uuid AS employee_attendance_uuid, ea.latitude AS employee_attendance_latitude, ea.longitude AS employee_attendance_longitude,
+		ea.attendance_date AS employee_attendance_attendance_date, ea.created_on AS employee_attendance_createdOn,
+		e.id AS employee_id, e.uuid AS employee_uuid, e.first_name AS employee_name,
+		at.id AS attendanceType_id, at.name AS attendanceType_name
+		FROM hr_employee_attendance ea
+		LEFT JOIN hr_employee e ON ea.employee_id=e.id
+		LEFT JOIN hr_attendance_type at ON ea.attendance_type_id=at.id
+		WHERE ea.employee_id IN (SELECT id FROM hr_employee WHERE uuid=#{EmployeeId}) AND ea.attendance_date BETWEEN #{FirstDateofMonth} AND #{LastDateOfMonth}
+		ORDER BY ea.attendance_date
+	</select>
+	
+	<select id="getPaySlips" resultMap="PaySlipRM">
+	 	(
+		 	SELECT p1.id AS paySlip_id, p1.uuid AS paySlip_uuid, p1.uploaded_on AS paySlip_uploadedOn, p1.file_name AS paySlip_file,
+			e1.id AS employee_id, e1.uuid AS employee_uuid, e1.first_Name AS employee_name,
+			u1.id AS user_id, u1.uuid AS user_uuid, u1.name AS user_name,
+			m1.id AS month_id, m1.name AS month_name, y1.id AS year_id, y1.name AS year_name
+			FROM payslip p1 
+			LEFT JOIN hr_employee e1 ON e1.id=p1.employee_id
+			LEFT JOIN "user" u1 ON u1.id=p1.uploaded_by_id
+			LEFT JOIN month m1 ON m1.id=p1.month_id
+			LEFT JOIN financial_year y1 ON y1.id=p1.financial_year_id
+			WHERE e1.id=#{EmployeeId} and (y1.name=#{Year1} and p1.month_id > #{Month1})
+		)
+		UNION
+		(
+			SELECT p.id AS paySlip_id, p.uuid AS paySlip_uuid, p.uploaded_on AS paySlip_uploadedOn, p.file_name AS paySlip_file,
+			e.id AS employee_id, e.uuid AS employee_uuid, e.first_Name AS employee_name,
+			u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name,
+			m.id AS month_id, m.name AS month_name, y.id AS year_id, y.name AS year_name
+			FROM payslip p
+			LEFT JOIN hr_employee e ON e.id=p.employee_id
+			LEFT JOIN "user" u ON u.id=p.uploaded_by_id
+			LEFT JOIN month m ON m.id=p.month_id
+			LEFT JOIN financial_year y ON y.id=p.financial_year_id
+			WHERE e.id=#{EmployeeId} and (y.name=#{Year2} AND p.month_id in (1,2,3)) 
+			ORDER BY year_id, month_id
+		)
+	</select>
+	
+	<select id="getPaySlipForEmployee" resultMap="PaySlipRM">
+		SELECT p.id AS paySlip_id, p.uuid AS paySlip_uuid, p.uploaded_on AS paySlip_uploadedOn, p.file_name AS paySlip_file,
+		e.id AS employee_id, e.uuid AS employee_uuid, e.first_Name AS employee_name,
+		u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name,
+		m.id AS month_id, m.name AS month_name, y.id AS year_id, y.name AS year_name
+		FROM payslip p 
+		LEFT JOIN hr_employee e ON e.id=p.employee_id
+		LEFT JOIN "user" u ON u.id=p.uploaded_by_id
+		LEFT JOIN month m ON m.id=p.month_id
+		LEFT JOIN financial_year y ON y.id=p.financial_year_id
+		WHERE p.id=#{PaySlipId} AND e.id=#{EmployeeId}
+	</select>
+<!-- 	
+	
+	
+	<select id="getEmployeeAddressForEmployee" resultMap="EmployeeAddressRM">
+		SELECT ea.id AS employee_address_id, ea.uuid AS employee_address_uuid, ea.line1 AS employee_address_line1, ea.line2 AS employee_address_line2,
+		ea.city AS employee_address_city, ea.pincode AS employee_address_pinCode,
+		s.id AS state_id, s.name AS state_name,
+		e.id AS employee_id, e.uuid AS employee_uuid
+		FROM "hr_employee_address" ea
+		LEFT JOIN "state" s ON s.id=ea.state_id
+		LEFT JOIN "hr_employee" e ON e.id=ea.hr_employee_id
+		WHERE ea.hr_employee_id=#{EmployeeId}
+	</select>
+
+	<select id="getEmployeeAddressByEmployeeID" resultMap="EmployeeAddressRM">
+		SELECT ea.id AS employee_address_id, ea.uuid AS employee_address_uuid, ea.line1 AS employee_address_line1, ea.line2 AS employee_address_line2,
+		ea.city AS employee_address_city, ea.pincode AS employee_address_pinCode,
+		s.id AS state_id, s.name AS state_name,
+		e.id AS employee_id, e.uuid AS employee_uuid
+		FROM "hr_employee_address" ea
+		LEFT JOIN "state" s ON s.id=ea.state_id
+		LEFT JOIN "hr_employee" e ON e.id=ea.hr_employee_id
+		WHERE ea.hr_employee_id=#{employeeId}
+	</select>
+	
+	<select id="getEmployeeAddressByUUID" resultMap="EmployeeAddressRM">
+		SELECT ea.id AS employee_address_id, ea.uuid AS employee_address_uuid, ea.line1 AS employee_address_line1, ea.line2 AS employee_address_line2,
+		ea.city AS employee_address_city, ea.pincode AS employee_address_pinCode,
+		s.id AS state_id, s.name AS state_name
+		FROM "hr_employee_address" ea
+		LEFT JOIN "state" s ON s.id = ea.state_id
+		WHERE ea.uuid = #{employeeAddressUUID}
+	</select>
+	
+	<select id="getEmployeeDocumentForEmployee" resultMap="EmployeeDocumentRM">
+		SELECT ed.id AS employee_document_uuid, ed.uuid AS employee_document_uuid, ed.file_name AS employee_document_file_name, ed.document_number AS employee_document_document_number,
+		dt.id AS documentType_id, dt.uuid AS documentType_uuid, dt.name AS documentType_name,
+		u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name,
+		e.id AS employee_id, e.uuid AS employee_uuid
+		FROM "hr_employee_document" ed
+		LEFT JOIN "hr_document_type" dt ON dt.id = ed.hr_document_type_id
+		LEFT JOIN "user" u ON u.id = ed.uploaded_by_id
+		LEFT JOIN "hr_employee" e ON e.id = hr_employee_id
+		WHERE ed.hr_employee_id = #{EmployeeId}
+	</select>
+	
+	<insert id="insertEmployee" parameterType="Employee" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "hr_employee"(uuid, code, first_name, last_name, date_of_birth, email, mobile, annual_ctc, father_name, mother_maiden_name,is_address_same,joining_date, probation_end_date, resignation_date, 
+		relieveing_date, is_bank_account_new, bank_account_number, bank_branch, branch_ifsc, name_in_bank_account, department_id, company_id, hr_candidate_id, bank_id, marital_status_id, reports_to_id)
+		VALUES (#{uuid}, #{code}, #{firstName}, #{lastName},#{dateOfBirth}, #{email}, #{mobile}, #{annualCTC}, #{fatherName}, #{motherMaidenName}, TRUE, #{joiningDate}, #{probationEndDate}, #{resignationDate},
+		 #{relieveingDate}, TRUE, #{bankAccountNumber}, #{bankBranch}, #{branchIFSC}, #{nameInBankAccount}, #{department.id}, #{company.id}, #{candidate.id}, #{bank.id}, #{maritalStatus.id}, #{reportTo.id})
+	</insert>
+	
+	 <update id="updateEmployee" parameterType="Employee">
+		UPDATE "hr_employee" SET code=#{code}, first_name=#{firstName}, last_name = #{lastName}, date_of_birth = #{dateOfBirth}, email = #{email}, mobile = #{mobile}, annual_ctc = #{annualCTC},
+		father_name=#{fatherName}, mother_maiden_name=#{motherMaidenName}, is_address_same = TRUE, joining_date = #{joiningDate}, probation_end_date = #{probationEndDate}, resignation_date = #{resignationDate},
+		relieveing_date = #{relieveingDate}, is_bank_account_new= TRUE, bank_account_number = #{bankAccountNumber}, bank_branch = #{bankBranch}, branch_ifsc = #{branchIFSC}, name_in_bank_account = #{nameInBankAccount},
+		department_id=#{department.id}, company_id=#{company.id}, hr_candidate_id=#{candidate.id} 
+		WHERE uuid=#{uuid} 
+	</update> 
+	
+	<delete id="deleteEmployee">
+		DELETE FROM "hr_employee" WHERE uuid=#{employeeUUID}
+	</delete>
+
+	
+	
+	<insert id="insertEmployeeDocument" parameterType="EmployeeDocument" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "hr_employee_document"(uuid, document_number, file_name, uploaded_on, uploaded_by_id, hr_employee_id, hr_document_type_id)
+		VALUES (#{uuid}, #{documentNumber}, #{file}, current_timestamp, #{uploadedBy.id}, #{employee.id}, #{documentType.id})
+	</insert>
+	
+	<update id="updateEmployeeDocument" parameterType="EmployeeDocument">
+		UPDATE "hr_employee_document" SET document_number = #{documentNumber}, file_name = #{file}, hr_document_type_id = #{documentType.id}
+		WHERE uuid = #{uuid}
+	</update>
+ -->	
+</mapper>

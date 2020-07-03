@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.joiningchecklist.dao.JoiningChecklistDAO">
+
+	<resultMap type="JoiningChecklist" id="JoiningChecklistRM">
+		<id property="id" column="joining_checklist_id"/>
+		<result property="uuid" column="joining_checklist_uuid"/>
+		<result property="name" column="joining_checklist_name"/>
+		<result property="active" column="joining_checklist_is_active"/>
+	</resultMap>
+
+	<select id="getJoiningChecklists" resultMap="JoiningChecklistRM">
+		SELECT jc.id AS joining_checklist_id, jc.uuid AS joining_checklist_uuid, jc.name AS joining_checklist_name
+		FROM hr_joining_checklist jc
+		LEFT JOIN company c ON jc.company_id=c.id 
+		WHERE c.uuid=#{companyUUID} AND jc.is_active=TRUE
+		ORDER BY jc.name
+	</select>
+	
+	<select id="getJoiningChecklist" resultMap="JoiningChecklistRM">
+		SELECT jc.id AS joining_checklist_id, jc.uuid AS joining_checklist_uuid, jc.name AS joining_checklist_name, jc.is_active AS joining_checklist_is_active
+		FROM hr_joining_checklist jc
+		WHERE jc.uuid=#{departmentUUID} 
+	</select>
+	
+	<insert id="insertJoiningChecklist" parameterType="JoiningChecklist" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_joining_checklist(uuid, name, company_id, is_active) VALUES(#{uuid}, #{name}, #{company.id}, TRUE)
+	</insert>
+	
+	<update id="updateJoiningChecklist" parameterType="JoiningChecklist">
+		UPDATE hr_joining_checklist SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+		
+	<update id="deleteJoiningChecklist" parameterType="JoiningChecklist">
+		UPDATE hr_joining_checklist SET is_active=FALSE WHERE uuid=#{uuid}
+	</update>
+
+</mapper>

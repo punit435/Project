@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.user.dao.UserDAO">
+
+	<resultMap id="UserRM" type="User">
+		<id property="id" column="user_id"/>
+		<result property="uuid" column="user_uuid"/>
+		<result property="name" column="user_name"/>
+		<result property="email" column="user_email"/>
+		<result property="password" column="user_password"/>
+		<result property="active" column="user_is_active"/>
+		<result property="authToken" column="user_authToken"/>
+		<result property="tokenExpiresOn" column="user_token_expires_on"/>
+		<result property="reset" column="user_reset"/>
+		<result property="createdOn" column="user_created_on"/>
+		<result property="lastLoggedIn" column="user_last_logged_in"/>
+		<association property="employee" javaType="Employee">
+			<id property="id" column="employee_id" />
+			<id property="uuid" column="employee_uuid" />
+		</association>
+		<association property="createdBy" javaType="User">
+			<id property="id" column="created_by_id" />
+			<id property="uuid" column="created_by_uuid" />
+			<result property="name" column="created_by_name" />
+		</association>
+		<association property="company" resultMap="com.enterio.common.dao.CommonDAO.CompanyRM" />
+		<collection property="modules" ofType="UserModule">
+			<id property="id" column="user_module_id" />
+			<result property="uuid" column="user_module_uuid" />
+			<result property="active" column="user_module_is_active" />
+			<association property="module" javaType="Module">
+				<id property="id" column="user_module_module_id"/>
+				<result property="name" column="user_module_module_name"/>
+			</association>
+			<association property="userType" javaType="UserType">
+				<id property="id" column="user_module_user_type_id"/>
+				<result property="uuid" column="user_module_user_type_uuid"/>
+				<result property="name" column="user_module_user_type_name"/>
+				<result property="code" column="user_module_user_type_code"/>
+			</association>
+		</collection>
+	</resultMap>
+	
+	<select id="authenticateUser" resultMap="UserRM">
+    	SELECT u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name
+    	FROM "user" u 
+    	WHERE u.email=#{Email} AND u.password=#{Password} AND is_active=true
+	</select>
+	
+	<update id="updateAuthToken" parameterType="User">
+		UPDATE "user" SET auth_token=#{authToken}, token_expires_on=#{tokenExpiresOn} WHERE uuid=#{uuid}		
+	</update>
+ 		
+	<select id="getUser" resultMap="UserRM">
+		SELECT u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name, u.email AS user_email, u.is_active AS user_is_active, u.auth_token AS user_authToken, 
+		u.password AS user_password, u.is_reset AS user_reset, u.created_on AS user_created_on, u.last_logged_in AS user_last_logged_in, 
+		u.token_expires_on AS user_token_expires_on,
+		um.id AS user_module_id, um.uuid AS user_module_uuid, um.is_active AS user_module_is_active, 
+		m.id AS user_module_module_id, m.name AS user_module_module_name,
+		ut.id AS user_module_user_type_id, ut.name AS user_module_user_type_name, ut.code AS user_module_user_type_code,
+		c.id AS company_id, c.uuid AS company_uuid, c.name AS company_name,
+		e.id AS employee_id, e.uuid AS employee_uuid
+		FROM "user" u 
+		LEFT JOIN user_module um ON um.user_id=u.id AND um.is_active=true
+		LEFT JOIN module m ON um.module_id=m.id
+		LEFT JOIN user_type ut ON ut.id=um.user_type_id
+		LEFT JOIN company c ON c.id=u.company_id
+		LEFT JOIN hr_employee e ON e.id=u.employee_id
+		WHERE u.uuid=#{userUUID}
+	</select>
+	
+	<select id="getUserByEmployeeUUID" resultMap="UserRM">
+		SELECT u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name, u.email AS user_email, u.is_active AS user_is_active, u.auth_token AS user_authToken, 
+		u.password AS user_password, u.is_reset AS user_reset, u.created_on AS user_created_on, u.last_logged_in AS user_last_logged_in, 
+		u.token_expires_on AS user_token_expires_on,
+		um.id AS user_module_id, um.uuid AS user_module_uuid, um.is_active AS user_module_is_active, 
+		m.id AS user_module_module_id, m.name AS user_module_module_name,
+		ut.id AS user_module_user_type_id, ut.name AS user_module_user_type_name, ut.code AS user_module_user_type_code,
+		c.id AS company_id, c.uuid AS company_uuid, c.name AS company_name,
+		e.id AS employee_id, e.uuid AS employee_uuid
+		FROM "user" u 
+		LEFT JOIN user_module um ON um.user_id=u.id AND um.is_active=true
+		LEFT JOIN module m ON um.module_id=m.id
+		LEFT JOIN user_type ut ON ut.id=um.user_type_id
+		LEFT JOIN company c ON c.id=u.company_id
+		LEFT JOIN hr_employee e ON e.id=u.employee_id
+		WHERE e.uuid=#{employeeUUID}
+	</select>
+	
+	<select id="getUserByAuthToken" resultMap="UserRM">
+		SELECT u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name, u.email AS user_email, u.is_active AS user_is_active, u.is_reset AS user_reset, u.created_on AS user_created_on,
+		u.last_logged_in AS user_last_logged_in,
+		c.id As company_id, c.uuid As company_uuid, c.name AS company_name,
+		um.id AS user_module_id, um.uuid AS user_module_uuid,
+		m.id AS user_module_module_id, m.name AS user_module_module_name,
+		ut.id AS user_module_user_type_id, ut.uuid AS user_module_user_type_uuid, ut.name AS user_module_user_type_name,
+		e.id AS employee_id, e.uuid AS employee_uuid
+		FROM "user" u
+		LEFT JOIN company c ON c.id=u.company_id
+		LEFT JOIN hr_employee e ON e.id=u.employee_id
+		LEFT JOIN user_module um ON um.user_id=u.id AND um.is_active=TRUE
+		LEFT JOIN module m ON um.module_id=m.id
+		LEFT JOIN user_type ut ON ut.id=um.user_type_id
+    	WHERE u.auth_token=#{authToken}
+    </select>	
+	
+	<select id="getUserByEmail" resultMap="UserRM">
+		SELECT u.id AS user_id, u.name AS user_name, u.email AS user_email
+		FROM "user" u
+		WHERE u.email=#{email}
+	</select>
+	
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "user"(uuid, name, email, password, is_active, created_on, is_reset, company_id, created_by_id, employee_id)
+		VALUES(#{uuid}, #{name}, #{email}, #{password}, TRUE, timezone('UTC'::text, now()), FALSE, #{company.id}, #{createdBy.id}, #{employee.id})
+	</insert>
+
+	<update id="updateEmployeeUser">
+		UPDATE "user" SET name=#{name}, email=#{email} WHERE id=#{id} 
+    </update>
+	
+	<update id="updatePassword" parameterType="User">
+	 	UPDATE "user" SET password=#{password}, last_logged_in=current_timestamp WHERE uuid=#{uuid}
+	</update>
+	
+	<update id="resetPassword">
+		UPDATE "user" SET password=#{password} WHERE id=#{id} 
+    </update>
+    
+    <select id="getUsersByDepartment" resultMap="UserRM">
+		SELECT u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name
+		FROM "user" u
+		LEFT JOIN hr_employee e ON u.employee_id=e.id
+		LEFT JOIN designation ds ON e.designation_id=ds.id
+		LEFT JOIN department d ON ds.department_id=d.id
+		WHERE d.uuid=#{departmentUUID} AND u.is_active = TRUE
+		ORDER BY u.name
+	</select>
+    
+<!-- 	
+	<select id="getUsers" resultMap="UserRM">
+		SELECT u.id AS user_id, u.uuid AS user_uuid, u.name AS user_name, u.email AS user_email, u.is_active AS user_is_active,
+		u.is_reset AS user_reset, u.created_on AS user_created_on, u.last_logged_in AS user_last_logged_in,
+		c.id AS company_id, c.uuid AS company_uuid, c.name AS company_name		
+		FROM "user" u
+		LEFT JOIN "company" c ON c.id = u.company_id
+		WHERE u.is_active = TRUE
+		ORDER BY u.name
+	</select>
+ -->	
+	<!-- <select id="getUserModules" resultMap="UserModuleRM">
+		SELECT um.id AS user_module_id, um.uuid AS user_module_uuid, um.created_on AS user_module_created_on, um.is_active AS user_is_active,
+		ut.id AS user_type_id, ut.name AS user_type_name, ut.uuid AS user_type_uuid,
+		u.id AS created_by_id, u.name AS created_by_name, u.uuid AS created_by_uuid,
+		m.id AS module_id, m.uuid AS module_uuid, m.name AS module_name, m.code AS module_code
+		FROM "user_module" um
+		LEFT JOIN "user_type" ut ON um.user_type_id = ut.id
+		LEFT JOIN "user" u ON um.user_id = u.id
+		LEFT JOIN "module" m ON um.module_id = m.id
+	</select> -->
+	
+	<!-- <select id="getUserByAuthToken" resultMap="UserRM">
+	  	SELECT u.id AS user_id, u.name AS user_name, u.email AS user_email, u.created_on AS user_created_on, u.is_active AS user_is_active,
+	    ut.id AS user_type_id, ut.name AS user_type_name
+		FROM "user" u
+		LEFT JOIN user_type ut ON u.user_type_id=ut.id
+        WHERE u.auth_token=#{authToken} and u.is_active=true;
+    </select> -->
+<!--     
+    
+	
+	 
+    
+    <select id="getUserByUUID" resultMap="UserRM">
+    	select u.id AS user_id ,u.name AS user_name, u.email AS user_email, u.password AS user_password,
+		u.last_logged_in AS user_last_logged_in, u.uuid AS user_uuid
+		FROM "user" u
+		WHERE u.uuid=#{uuid}
+    </select> 
+	
+	
+	
+	 
+	
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "user"(uuid, name, email, password, is_active, created_on, last_logged_in,is_reset, company_id, created_by_id)
+		VALUES(#{uuid}, #{name}, #{email}, #{password}, TRUE, current_timestamp, current_timestamp, TRUE, #{company.id}, #{createdBy.id})
+	</insert>
+	
+	 <update id="updateUser" parameterType="User">
+		UPDATE "user" SET name = #{name}, email = #{email} WHERE uuid = #{uuid}
+	</update> 
+	
+	<delete id="deleteUser">
+		UPDATE "user" SET is_active = FALSE WHERE uuid=#{userUUID}
+	</delete>
+	
+	<update id="deleteAssignedModule">
+		UPDATE user_module SET is_active= FALSE
+		WHERE uuid = #{uuid}  AND is_active=TRUE
+	</update>
+ -->
+</mapper>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.documenttype.dao.DocumentTypeDAO">
+
+	<resultMap type="DocumentType" id="DocumentTypeRM">
+		<id property="id" column="document_type_id"/>
+		<result property="uuid" column="document_type_uuid"/>
+		<result property="name" column="document_type_name"/>
+		<result property="active" column="document_type_is_active"/>
+		<result property="createdOn" column="document_type_created_on"/>
+		<association property="createdBy" javaType="User">
+			<id property="id" column="dtcb_user_id" />
+			<id property="uuid" column="dtcb_user_uuid" />
+			<result property="name" column="dtcb_user_name" />
+		</association>
+	</resultMap>
+
+	<select id="getDocumentTypes" resultMap="DocumentTypeRM">
+		SELECT dt.id AS document_type_id, dt.uuid AS document_type_uuid, dt.name AS document_type_name
+		FROM hr_document_type dt
+		LEFT JOIN company c ON dt.company_id=c.id 
+		WHERE c.uuid=#{companyUUID} AND dt.is_active=TRUE
+		ORDER BY dt.name
+	</select>
+	
+	<select id="getDocumentType" resultMap="DocumentTypeRM">
+		SELECT dt.id AS document_type_id, dt.uuid AS document_type_uuid, dt.name AS document_type_name, dt.is_active AS document_type_is_active
+		FROM hr_document_type dt
+		WHERE dt.uuid=#{documentTypeUUID}
+	</select>
+	
+	<insert id="insertDocumentType" parameterType="DocumentType" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_document_type(uuid, name, company_id, created_on, created_by_id, is_active)
+		VALUES(#{uuid}, #{name}, #{company.id}, timezone('UTC'::text, now()), #{createdBy.id}, TRUE)
+	</insert>
+	
+	 <update id="updateDocumentType" parameterType="DocumentType">
+		UPDATE hr_document_type SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+
+	 <update id="deleteDocumentType" parameterType="DocumentType">
+		UPDATE hr_document_type SET is_active=FALSE WHERE uuid=#{uuid}
+	</update> 
+
+</mapper>

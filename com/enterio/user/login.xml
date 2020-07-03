@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="login" namespace="/" extends="struts-default">
+		<action name="Login" method="login" class="com.enterio.user.web.ValidateUser">
+			<result>/login.jsp</result>
+		</action>
+		<action name="ValidateUser/*" method="validateUser" class="com.enterio.user.web.ValidateUser">
+			<param name="actionInput">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+			<result name="login">/login.jsp</result>
+		</action>
+		<action name="Logout" method="logout" class="com.enterio.user.web.ValidateUser">
+			<result name="success" type="redirectAction">Login</result>
+		</action>
+		<action name="ForgotPassword" method="forgotPassword" class="com.enterio.user.web.ValidateUser">
+			<result name="resetsuccess">/resetPasswordSuccess.jsp</result>
+			<result name="reseterror">/resetPasswordError.jsp</result>
+		</action>
+	</package>
+</struts>

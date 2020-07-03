@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="at" namespace="/AssetType" extends="common">
+		<action name="AssetTypes" method="assetTypeList" class="com.enterio.hrms.assettype.web.AssetTypeAction">
+			<result name="success">/hrms/assetTypeList.jsp</result>
+		</action>
+		<action name="AddAssetType" method="addAssetType" class="com.enterio.hrms.assettype.web.AssetTypeAction">
+			<result name="success">/hrms/assetTypeAddEdit.jsp</result>
+		</action>
+		<action name="SaveAssetType" method="saveAssetType" class="com.enterio.hrms.assettype.web.AssetTypeAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="EditAssetType/*" method="editAssetType" class="com.enterio.hrms.assettype.web.AssetTypeAction">
+			<param name="assetTypeUUID">{1}</param>
+			<result name="success">/hrms/assetTypeAddEdit.jsp</result>
+		</action>
+		<action name="Delete/*" method="deleteAssetType" class="com.enterio.hrms.assettype.web.AssetTypeAction">
+			<param name="assetTypeUUID">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action> 
+	</package>
+	
+</struts>

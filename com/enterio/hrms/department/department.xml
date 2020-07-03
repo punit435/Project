@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="dp1" namespace="/Department" extends="common">
+		<action name="Departments" method="departmentList" class="com.enterio.hrms.department.web.DepartmentAction">
+			<result name="success">/hrms/departmentList.jsp</result>
+		</action>
+		<action name="Details/*" method="departmentDetails" class="com.enterio.hrms.department.web.DepartmentAction">
+			<param name="departmentUUID">{1}</param>
+			<result name="success">/hrms/departmentDetails.jsp</result>
+		</action>
+		<action name="Add" method="addDepartment" class="com.enterio.hrms.department.web.DepartmentAction">
+			<result name="success">/hrms/departmentAddEdit.jsp</result>
+		</action>
+		<action name="Edit/*" method="editDepartment" class="com.enterio.hrms.department.web.DepartmentAction">
+			<param name="departmentUUID">{1}</param>
+			<result name="success">/hrms/departmentAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveDepartment" class="com.enterio.hrms.department.web.DepartmentAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*" method="deleteDepartment" class="com.enterio.hrms.department.web.DepartmentAction">
+			<param name="departmentUUID">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+</struts>

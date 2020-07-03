@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.candidatevacancy.dao.CandidateVacancyDAO">
+	<resultMap id="CandidateVacancyRM" type="CandidateVacancy">
+		<id property="id" column="candidateVacancy_id"/>
+		<result property="uuid" column="candidateVacancy_uuid"/>
+		<result property="selectionRemarks" column="candidateVacancy_selectionRemarks"/>
+		<result property="selectedOn" column="candidateVacancy_selectedOn"/>
+		<result property="assignedOn" column="candidateVacancy_assignedOn"/>
+		<result property="rejectionRemarks" column="candidateVacancy_rejectionRemarks"/>
+		<result property="rejectedOn" column="candidateVacancy_rejectedOn"/>
+		<result property="onholdOn" column="candidateVacancy_onholdOn"/>
+		<result property="onholdRemarks" column="candidateVacancy_onholdRemarks"/>
+		
+		<association property="selectedBy" javaType="User">
+			<id property="id" column="selected_by_id" />
+			<id property="uuid" column="selected_by_uuid" />
+			<result property="name" column="selected_by_name" />
+		</association>
+		<association property="assignedBy" javaType="User">
+			<id property="id" column="assigned_by_id" />
+			<id property="uuid" column="assigned_by_uuid" />
+			<result property="name" column="assigned_by_name" />
+		</association>
+		<association property="rejectedBy" javaType="User">
+			<id property="id" column="rejected_by_id" />
+			<id property="uuid" column="rejected_by_uuid" />
+			<result property="name" column="rejected_by_name" />
+		</association>
+		<association property="onholdBy" javaType="User">
+			<id property="id" column="onhold_by_id" />
+			<id property="uuid" column="onhold_by_uuid" />
+			<result property="name" column="onhold_by_name" />
+		</association>
+
+	<association property="vacancy" javaType="Vacancy">
+			<id property="id" column="hr_vacancy_id" />
+			<id property="uuid" column="hr_vacancy_uuid" />
+			<result property="skills" column="hr_vacancy_skills" />
+		</association> 
+	  	<association property="candidate" javaType="Candidate">
+			<id property="id" column="hr_candidate_id" />
+			<id property="uuid" column="hr_candidate_uuid" />
+			<result property="firstName" column="hr_candidate_name" />
+		</association>
+		<association property="candidateStatus" javaType="CandidateStatus">
+			<id property="id" column="hr_candidate_status_id" />
+			<id property="uuid" column="hr_candidate_status_uuid" />
+			<result property="name" column="hr_candidate_status_name" />
+		</association>
+			
+	</resultMap> 
+	
+	<select id="getCandidateVacancys" resultMap="CandidateVacancyRM">
+SELECT cv.id AS candidateVacancy_id, cv.uuid AS candidateVacancy_uuid, cv.selection_remarks AS candidateVacancy_selectionRemarks,
+		cv.selected_on AS candidateVacancy_selectedOn, cv.assigned_on AS candidateVacancy_assignedOn, cv.rejection_remarks AS candidateVacancy_rejectionRemarks,
+		cv.rejected_on AS candidateVacancy_rejectedOn, cv.onhold_on AS candidateVacancy_onholdOn, cv.onhold_remarks AS candidateVacancy_onholdRemarks,
+		v.id AS hr_vacancy_id, v.skills AS hr_vacancy_skills,
+		cd.id AS hr_candidate_id ,cd.first_name AS hr_candidate_name,
+		cds.id AS hr_candidate_status_id, cds.name AS  hr_candidate_status_name
+		FROM "candidate_vacancy" cv
+		LEFT JOIN hr_vacancy v on cv.vacancy_id = v.id
+		LEFT JOIN hr_candidate cd on cv.candidate_id=cd.id
+		LEFT JOIN hr_candidate_status cds on cv.candidate_status_id=cds.id
+	
+		
+	</select>
+	
+	<select id="getCandidateVacancy" resultMap="CandidateVacancyRM">
+SELECT cv.id AS candidateVacancy_id, cv.uuid AS candidateVacancy_uuid, cv.selection_remarks AS candidateVacancy_selectionRemarks,
+		cv.selected_on AS candidateVacancy_selectedOn, cv.assigned_on AS candidateVacancy_assignedOn, cv.rejection_remarks AS candidateVacancy_rejectionRemarks,
+		cv.rejected_on AS candidateVacancy_rejectedOn, cv.onhold_on AS candidateVacancy_onholdOn, cv.onhold_remarks AS candidateVacancy_onholdRemarks,
+		v.id AS hr_vacancy_id, v.skills AS hr_vacancy_skills,
+		cd.id AS hr_candidate_id ,cd.first_name AS hr_candidate_name,
+		cds.id AS hr_candidate_status_id, cds.name AS  hr_candidate_status_name
+		FROM "candidate_vacancy" cv
+		LEFT JOIN hr_vacancy v on cv.vacancy_id = v.id
+		LEFT JOIN hr_candidate cd on cv.candidate_id=cd.id
+		LEFT JOIN hr_candidate_status cds on cv.candidate_status_id=cds.id
+		WHERE cv.uuid=#{candidateVacancyUUID}
+	</select>
+	
+	<insert id="insertCandidateVacancy" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "candidate_vacancy" (candidate_id, vacancy_id, assigned_on, assigned_by_id, candidate_status_id, selected_on, 
+		selected_by_id, selection_remarks, rejected_on, rejected_by_id, rejection_remarks, onhold_on, onhold_by_id, onhold_remarks, uuid)
+		VALUES (#{candidate.id}, #{vacancy.id}, current_timestamp, #{assignedBy.id}, #{candidateStatus.id}, current_timestamp, 
+		#{selectedBy.id}, #{selectionRemarks}, current_timestamp, #{rejectedBy.id}, #{rejectionRemarks},current_timestamp, #{onholdBy.id}, #{onholdRemarks}, #{uuid})
+	</insert>
+	
+	 <update id="updateCandidateVacancy" parameterType="CandidateVacancy">
+		UPDATE "candidate_vacancy" SET selection_remarks=#{selectionRemarks}, candidate_status_id=#{candidateStatus.id},  rejection_remarks = #{rejectionRemarks}, 
+		 onhold_remarks=#{onholdRemarks},
+		vacancy_id=#{vacancy.id}, candidate_id=#{candidate.id}
+		WHERE uuid=#{uuid}
+	</update> 
+	
+	<delete id="deleteCandidateVacancy">
+	DELETE FROM "candidate_vacancy" WHERE uuid=#{candidateVacancyUUID}
+	</delete>
+
+</mapper>

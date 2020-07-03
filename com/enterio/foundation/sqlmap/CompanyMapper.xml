@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.company.dao.CompanyDAO">
+	<resultMap type="Company" id="CompanyRM">
+		<id property="id" column="company_id" />
+		<result property="uuid" column="company_uuid" />
+		<result property="name" column="company_name" />
+	</resultMap>
+
+	<select id="getCompanyByUUID" resultMap="CompanyRM">
+		SELECT c.id AS company_id, c.name AS company_name, c.uuid AS company_uuid
+		FROM "company" c
+        WHERE c.uuid=#{uuid}
+	</select>
+
+	<select id="getCompany" resultMap="CompanyRM">
+		SELECT c.id AS company_id, c.uuid AS company_uuid,
+		c.name AS company_name
+		FROM "company" c
+	</select>
+
+</mapper>

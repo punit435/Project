@@ -1,0 +1,54 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.consultancy.dao.ConsultancyDAO">
+	<resultMap type="ConsultancyContact" id="ConsultancyContactRM">
+		<id property="id" column="consultancyccontact_id"/>
+		<result property="uuid" column="consultancycontact_uuid"/>
+		<result property="name" column="consultancycontact_name"/>
+		<result property="email" column="consultancycontact_email"/>
+		<result property="mobile" column="consultancycontact_mobile"/>
+		<result property="alternatemobile" column="consultancycontact_alternatemobile"/>
+		<result property="landline" column="consultancycontact_landline"/>
+		<result property="alternatelandline" column="consultancycontact_alternatelandline"/>
+		<result property="active" column="consultancycontact_isActive"/>
+		<association property="consultancy" javaType="Consultancy">
+			<id property="id" column="consultancy_id" />
+			<id property="uuid" column="consultancy_uuid" />
+			<result property="name" column="consultancy_name" />
+		</association>
+	</resultMap>
+	
+
+	<select id="getConsultancyContacts" resultMap="ConsultancyContactRM">
+		SELECT cc.id AS consultancyccontact_id, cc.uuid AS consultancycontact_uuid, cc.name AS consultancycontact_name, cc.email AS consultancycontact_email,
+		cc.mobile AS consultancycontact_mobile, cc.alternate_mobile AS consultancycontact_alternatemobile, cc.landline AS consultancycontact_landline, cc.alternate_landline AS consultancycontact_alternatelandline, 
+		co.id AS consultancy_id, co.name AS consultancy_name 
+		FROM "hr_consultancy_contact" cc
+		LEFT JOIN hr_consultancy co on cc.consultancy_id = co.id
+	</select>
+	
+	<select id="getConsultancyContact" resultMap="ConsultancyContactRM">
+		SELECT cc.id AS consultancyccontact_id, cc.uuid AS consultancycontact_uuid, cc.name AS consultancycontact_name, cc.email AS consultancycontact_email,
+		cc.mobile AS consultancycontact_mobile, cc.alternate_mobile AS consultancycontact_alternatemobile, cc.landline AS consultancycontact_landline, cc.alternate_landline AS consultancycontact_alternatelandline, 
+		co.id AS consultancy_id, co.name AS consultancy_name 
+		FROM "hr_consultancy_contact" cc
+		LEFT JOIN hr_consultancy co on cc.consultancy_id = co.id
+		WHERE cc.uuid=#{consultancycontactUUID}
+	</select>
+	
+	<insert id="insertConsultancyContact" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "hr_consultancy_contact"(uuid, name, email, mobile, alternate_mobile, landline, alternate_landline, consultancy_id, is_active)
+		VALUES (#{uuid}, #{name}, #{email}, #{mobile},#{alternatemobile},#{landline},#{alternatelandline}, #{consultancy.id}, #{active})
+	</insert>
+	
+	 <update id="updateConsultancyContact" parameterType="ConsultancyContact">
+		UPDATE "hr_consultancy_contact" SET name=#{name} WHERE uuid=#{uuid}
+	</update> 
+		
+	<delete id="deleteConsultancyContact">	
+ DELETE FROM "hr_consultancy_contact" WHERE uuid=#{consultancycontactUUID}
+	</delete>
+	
+
+</mapper> -->

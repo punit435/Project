@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="pg1" namespace="/PolicyGroup" extends="common">
+		<action name="PolicyGroups" method="policyGroupList" class="com.enterio.hrms.policygroup.web.PolicyGroupAction">
+			<result name="success">/hrms/policyGroupList.jsp</result>
+		</action>
+		<action name="Details/*" method="policyGroupDetails" class="com.enterio.hrms.policygroup.web.PolicyGroupAction">
+			<param name="policyGroupUUID">{1}</param>
+			<result name="success">/hrms/policyGroupDetails.jsp</result>
+		</action> 
+		<action name="Add" method="addPolicyGroup" class="com.enterio.hrms.policygroup.web.PolicyGroupAction">
+			<result name="success">/hrms/policyGroupAddEdit.jsp</result>
+		</action>
+		<action name="Edit/*" method="editPolicyGroup" class="com.enterio.hrms.policygroup.web.PolicyGroupAction">
+			<param name="policyGroupUUID">{1}</param>
+			<result name="success">/hrms/policyGroupAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="savePolicyGroup" class="com.enterio.hrms.policygroup.web.PolicyGroupAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*" method="deletePolicyGroup" class="com.enterio.hrms.policygroup.web.PolicyGroupAction">
+			<param name="policyGroupUUID">{1}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+	<package name="p1" namespace="/Policy" extends="common">
+		<action name="Details/*" method="policyDetails" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<param name="policyUUID">{1}</param>
+			<result name="success">/hrms/policyDetails.jsp</result>
+		</action> 
+		<action name="Add/*" method="addPolicy" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<param name="policyGroupUUID">{1}</param>
+			<result name="success">/hrms/policyAddEdit.jsp</result>
+		</action>
+		<action name="Edit/*/*" method="editPolicy" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<param name="policyGroupUUID">{1}</param>
+			<param name="policyUUID">{2}</param>
+			<result name="success">/hrms/policyAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="savePolicy" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*/*" method="deletePolicy" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<param name="policyGroupUUID">{1}</param>
+			<param name="policyUUID">{2}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="ViewDocument/*" method="viewDocument" class="com.enterio.hrms.policygroup.web.PolicyAction">
+			<param name="policyUUID">{1}</param>
+		</action>
+		
+	</package>
+</struts>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<package name="ds1" namespace="/Designation" extends="common">
+		<action name="Add/*" method="addDesignation" class="com.enterio.hrms.designation.web.DesignationAction">
+			<param name="departmentUUID">{1}</param>
+			<result name="success">/hrms/designationAddEdit.jsp</result>
+		</action>
+		 <action name="Edit/*/*" method="editDesignation" class="com.enterio.hrms.designation.web.DesignationAction">
+			<param name="departmentUUID">{1}</param>
+			<param name="designationUUID">{2}</param>
+			<result name="success">/hrms/designationAddEdit.jsp</result>
+		</action>
+		<action name="Save" method="saveDesignation" class="com.enterio.hrms.designation.web.DesignationAction">
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+		<action name="Delete/*/*" method="deleteDesignation" class="com.enterio.hrms.designation.web.DesignationAction">
+			<param name="departmentUUID">{1}</param>
+			<param name="designationUUID">{2}</param>
+			<result name="success" type="redirectAction">${redirectURL}</result>
+		</action>
+	</package>
+</struts>

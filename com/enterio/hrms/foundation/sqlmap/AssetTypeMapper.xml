@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.assettype.dao.AssetTypeDAO">
+
+	<resultMap id="AssetTypeRM" type="AssetType">
+		<id property="id" column="asset_type_id"/>
+		<result property="uuid" column="asset_type_uuid"/>
+		<result property="name" column="asset_type_name"/>
+		<result property="active" column="asset_type_is_active"/>
+		<association property="company" javaType="Company">
+			<id property="id" column="company_id" />
+			<id property="uuid" column="company_uuid" />
+			<result property="name" column="company_name" />
+		</association>
+	</resultMap>
+
+	<select id="getAssetTypes" resultMap="AssetTypeRM">
+		SELECT at.id AS asset_type_id, at.name AS asset_type_name, at.is_active AS asset_type_is_active, at.uuid AS asset_type_uuid,
+		c.id AS company_id, c.uuid AS company_uuid, c.name AS company_name
+		FROM hr_asset_type at
+		LEFT JOIN company c ON c.id=at.company_id
+		WHERE c.uuid=#{companyUUID} AND at.is_active=TRUE
+		ORDER BY at.name
+	</select>
+	
+	<select id="getAssetTypeByUUID" resultMap="AssetTypeRM">
+		SELECT at.id AS asset_type_id, at.name AS asset_type_name, at.is_active AS asset_type_is_active, at.uuid AS asset_type_uuid,
+		c.id AS company_id, c.uuid AS company_uuid, c.name AS company_name
+		FROM hr_asset_type at
+		LEFT JOIN company c ON c.id = at.company_id
+		WHERE at.company_id=1 AND at.uuid=#{assetTypeUUID}
+	</select>
+	
+	<insert id="insertAssetType" parameterType="AssetType" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO hr_asset_type(uuid, name, company_id, is_active) VALUES (#{uuid}, #{name}, #{company.id}, TRUE)
+	</insert>
+	
+	<update id="updateAssettype" parameterType="AssetType">
+		UPDATE hr_asset_type SET name=#{name} WHERE uuid=#{uuid} 
+	</update> 
+	
+	<update id="deleteAssetType">
+		UPDATE hr_asset_type SET is_active=FALSE WHERE id=#{id}
+	</update>
+	
+</mapper>

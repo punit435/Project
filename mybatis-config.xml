@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.enterio.foundation.domain.Module" alias="Module"></typeAlias>
+		<typeAlias type="com.enterio.foundation.domain.User" alias="User"></typeAlias>
+		<typeAlias type="com.enterio.foundation.domain.UserType" alias="UserType"></typeAlias>
+		<typeAlias type="com.enterio.foundation.domain.UserModule" alias="UserModule"></typeAlias>
+		<typeAlias type="com.enterio.foundation.domain.Company" alias="Company"></typeAlias>
+		<typeAlias type="com.enterio.foundation.domain.Bank" alias="Bank"></typeAlias> 
+		<typeAlias type="com.enterio.foundation.domain.Month" alias="Month"></typeAlias> 
+		<typeAlias type="com.enterio.foundation.domain.FinancialYear" alias="FinancialYear"></typeAlias> 
+		
+		<!-- <typeAlias type="com.hrms.foundation.domain.Company" alias="Company"></typeAlias> -->
+		<typeAlias type="com.enterio.hrms.foundation.domain.PaySlip" alias="PaySlip"></typeAlias> 
+		<typeAlias type="com.enterio.hrms.foundation.domain.Department" alias="Department"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Designation" alias="Designation"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Consultancy" alias="Consultancy"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.ConsultancyContact" alias="ConsultancyContact"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.VacancyStatus" alias="VacancyStatus"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Vacancy" alias="Vacancy"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.CandidateType" alias="CandidateType"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Candidate" alias="Candidate"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Gender" alias="Gender"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.CandidateStatus" alias="CandidateStatus"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.CandidateVacancy" alias="CandidateVacancy"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.CandidateVacancy" alias="CandidateVacancy"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Employee" alias="Employee"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.EmployeeAddress" alias="EmployeeAddress"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.MaritalStatus" alias="MaritalStatus"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.PolicyGroup" alias="PolicyGroup"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.Policy" alias="Policy"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.State" alias="State"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.EmployeeDocument" alias="EmployeeDocument"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.DocumentType" alias="DocumentType"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.JoiningChecklist" alias="JoiningChecklist"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.EmployeeAttendance" alias="EmployeeAttendance"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.AttendanceType" alias="AttendanceType"></typeAlias>
+		<typeAlias type="com.enterio.hrms.foundation.domain.AssetType" alias="AssetType"></typeAlias>
+	</typeAliases>
+	
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC"/>
+			<dataSource type="JNDI">
+                <property name="data_source" value="java:/comp/env/enteriojndi"/>
+            </dataSource>
+		</environment>
+	</environments>
+	
+	<mappers>
+		<mapper resource="com/enterio/foundation/sqlmap/CommonMapper.xml" />
+		<mapper resource="com/enterio/foundation/sqlmap/UserMapper.xml" />
+		<mapper resource="com/enterio/foundation/sqlmap/CompanyMapper.xml" />
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/CommonMapper.xml" />
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/DepartmentMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/DesignationMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/DocumentTypeMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/JoiningChecklistMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/PolicyGroupMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/EmployeeMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/ConsultancyMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/AssetTypeMapper.xml"/>
+		
+<!-- 		<mapper resource="com/enterio/hrms/foundation/sqlmap/ConsultancyContactMapper.xml"/> -->
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/VacancyMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/CandidateMapper.xml"/>
+		<mapper resource="com/enterio/hrms/foundation/sqlmap/CandidateVacancyMapper.xml"/>
+	</mappers>
+</configuration>

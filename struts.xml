@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.action.extension" value=","/>
+	<constant name="struts.devMode" value="true" />
+	<constant name="struts.multipart.maxSize" value="20971520" />
+	<constant name="struts.action.excludePattern" value="/api/.*" />
+		
+	<include file="com/enterio/common/struts-common.xml" />
+	<include file="com/enterio/user/login.xml" />
+	<include file="com/enterio/user/user.xml" />
+	<include file="com/enterio/hrms/department/department.xml"></include>
+	<include file="com/enterio/hrms/designation/designation.xml"></include>
+	<include file="com/enterio/hrms/documenttype/documenttype.xml"></include>
+	<include file="com/enterio/hrms/joiningchecklist/joiningchecklist.xml"></include>
+	<include file="com/enterio/hrms/policygroup/policygroup.xml"></include>
+	<include file="com/enterio/hrms/consultancy/consultancy.xml"></include>
+	<include file="com/enterio/hrms/assettype/assettype.xml"></include>
+	<include file="com/enterio/hrms/employee/employee.xml"></include> 
+
+<!--  	
+	<include file="com/enterio/hrms/common/common.xml" />
+	<include file="com/enterio/hrms/consultancy/Consultancy.xml"></include>
+	<include file="com/enterio/hrms/vacancy/vacancy.xml"></include>
+	<include file="com/enterio/hrms/candidate/candidate.xml"></include>
+	<include file="com/enterio/hrms/candidatevacancy/CandidateVacancy.xml"></include> 
+-->	 
+ 
+</struts>

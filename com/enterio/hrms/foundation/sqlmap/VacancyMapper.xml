@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enterio.hrms.vacancy.dao.VacancyDAO">
+	<resultMap id="VacancyRM" type="Vacancy">
+		<id property="id" column="vacancy_id"/>
+		<result property="positions" column="vacancy_positions"/>
+		<result property="experienceMin" column="vacancy_experience_min"/>
+		<result property="experienceMax" column="vacancy_experience_max"/>
+		<result property="uuid" column="vacancy_uuid"/>
+		<result property ="jobDescription" column="vacancy_jobdesciption"/>
+		<result property="skills" column="vacancy_skills"/>
+		<result property="createdOn" column="vacancy_createdOn"/>
+		<result property="active" column="vacancy_active"/>
+		<result property="location" column="vacancy_location"/>
+		
+		<association property="createdBy" javaType="User">
+			<id property="id" column="created_by_id" />
+			<id property="uuid" column="created_by_uuid" />
+			<result property="name" column="created_by_name" />
+		</association>
+	  	<association property="designation" javaType="Designation">
+			<id property="id" column="designation_id" />
+			<id property="uuid" column="designation_uuid" />
+			<result property="name" column="designation_name" />
+		</association>
+			  	<association property="vacancyStatus" javaType="VacancyStatus">
+			<id property="id" column="hr_vacancy_status_id" />
+			<id property="uuid" column="hr_vacancy_status_uuid" />
+			<result property="name" column="hr_vacancy_status_name" />
+		</association>
+	</resultMap> 
+	
+	<select id="getVacancys" resultMap="VacancyRM">
+		SELECT v.id AS vacancy_id, v.uuid AS vacancy_uuid, v.is_active AS vacancy_active,
+		v.positions AS vacancy_positions, v.experience_min AS vacancy_experience_min, v.experience_max AS vacancy_experience_max,
+		v.job_desciption AS vacancy_jobdesciption, v.created_on AS vacancy_created_on, v.skills AS vacancy_skills, v.location AS vacancy_location,
+		d.id AS department_id, d.name AS department_name,
+		de.id AS designation_id, de.name AS designation_name,
+		vs.id AS hr_vacancy_status_id, vs.name AS hr_vacancy_status_name
+		FROM "hr_vacancy" v
+		LEFT JOIN department d on v.id = d.id
+		LEFT JOIN designation de on v.designation_id=de.id
+		LEFT JOIN hr_vacancy_status vs on v.hr_vacancy_status_id=vs.id	
+		
+	</select>
+	
+	<select id="getVacancy" resultMap="VacancyRM">
+		SELECT v.id AS vacancy_id, v.uuid AS vacancy_uuid, v.is_active AS vacancy_active,
+		v.positions AS vacancy_positions, v.experience_min AS vacancy_experience_min, v.experience_max AS vacancy_experience_max,
+		v.job_desciption AS vacancy_jobdesciption, v.created_on AS vacancy_created_on, v.skills AS vacancy_skills, v.location AS vacancy_location,
+		d.id AS department_id, d.name AS department_name,
+		de.id AS designation_id, de.name AS designation_name,
+		vs.id AS hr_vacancy_status_id, vs.name AS hr_vacancy_status_name
+		FROM "hr_vacancy" v
+		LEFT JOIN department d on v.id = d.id
+		LEFT JOIN designation de on v.designation_id=de.id
+		LEFT JOIN hr_vacancy_status vs on v.hr_vacancy_status_id=vs.id
+		WHERE v.uuid=#{vacancyUUID}
+	</select>
+	
+	<insert id="insertVacancy" parameterType="Vacancy" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO "hr_vacancy"(uuid, is_active, positions, experience_min, experience_max, job_desciption, created_on, created_by_id, skills,department_id,designation_id,hr_vacancy_status_id )
+		VALUES (#{uuid}, TRUE, #{positions}, #{experienceMin},#{experienceMax}, #{jobDescription}, current_timestamp, #{createdBy.id}, #{skills}, #{department.id},#{designation.id},#{vacancyStatus.id})
+	</insert>
+	
+	 <update id="updateVacancy" parameterType="Vacancy">
+		UPDATE "hr_vacancy" SET is_active=#{active}, positions=#{positions}, experience_min = #{experienceMin}, experience_max = #{experienceMax}, job_desciption = #{jobDescription},
+		 department_id=#{department.id}, designation_id=#{designation.id}, hr_vacancy_status_id=#{vacancyStatus.id} 
+		WHERE uuid=#{uuid}
+	</update> 
+	
+	<delete id="deleteVacancy">
+	DELETE FROM "hr_vacancy" WHERE uuid=#{vacancyUUID}
+	</delete>
+
+</mapper>
